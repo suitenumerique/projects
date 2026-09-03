@@ -1,3 +1,5 @@
+const { buildThumbnailHeaders } = require('../../../utils/attachment-headers');
+
 const Errors = {
   ATTACHMENT_NOT_FOUND: {
     attachmentNotFound: 'Attachment not found',
@@ -54,8 +56,10 @@ module.exports = {
       throw Errors.ATTACHMENT_NOT_FOUND;
     }
 
-    this.res.type('image/jpeg');
-    this.res.set('Cache-Control', 'private, max-age=900'); // TODO: move to config
+    this.res.set({
+      ...buildThumbnailHeaders(attachment),
+      'Cache-Control': 'private, max-age=900', // TODO: move to config
+    });
 
     return exits.success(readStream);
   },

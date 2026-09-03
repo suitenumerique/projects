@@ -65,9 +65,17 @@ const buildHeaders = (attachment) => {
   };
 };
 
+const buildThumbnailHeaders = (attachment) => ({
+  // Thumbnails are re-encoded by `sharp`, but in the *input* format, so the extension the thumbnail was written with is what the bytes actually are.
+  'Content-Type': getImageMimeType(attachment.image) || OPAQUE_MIME_TYPE,
+  'X-Content-Type-Options': 'nosniff',
+  'Content-Security-Policy': CONTENT_SECURITY_POLICY,
+});
+
 module.exports = {
   MIME_TYPE_BY_IMAGE_FORMAT,
   INLINE_MIME_TYPES,
   getMimeType,
   buildHeaders,
+  buildThumbnailHeaders,
 };

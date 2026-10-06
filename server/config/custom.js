@@ -78,6 +78,12 @@ const FaviconThemeSchema = z.object({
 const ThemeSchema = z.object({
   favicon: FaviconThemeSchema.optional(),
   disableDarkMode: z.boolean().optional(),
+  // Renders the ProConnect sign-in button instead of the neutral one, and the
+  // French State block-marque next to the app logo. Both carry State identity
+  // marks, so they stay off unless the deployment is actually entitled to
+  // them and federated with ProConnect.
+  proconnect: z.boolean().optional(),
+  govBranding: z.boolean().optional(),
   // Overrides Cunningham CSS custom properties (e.g. "--c--globals--colors--brand-500"),
   // see client/src/assets/styles/cunningham-tokens.css for the full list of names.
   colors: z.record(z.string(), z.string()).optional(),

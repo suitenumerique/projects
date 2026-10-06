@@ -132,6 +132,8 @@ A default deployment already ships white-label, with a neutral look and no extra
 - `theme.fontFamily` — a CSS font-family value, e.g. `THEME='{"fontFamily":"Arial, sans-serif"}'`. This only sets the CSS declaration — the app doesn't fetch/host third-party font files for you (Hanken Grotesk is self-hosted by default, anything else here isn't), so use a web-safe font or self-host your own `@font-face` separately.
 - `theme.favicon` (`{src, darkSrc?}`) — the browser tab icon.
 - `theme.header.{default,fr,en}.logo` (`{src, width?, height?, alt}`) — the header logo; falls back to this app's own bundled "Projets" logo when unset.
+- `theme.proconnect` (boolean, default `false`) — renders the ProConnect sign-in button instead of the neutral "Log in" one. ProConnect is a French State identity provider, so leave this off unless the deployment is actually federated with it.
+- `theme.govBranding` (boolean, default `false`) — renders the French State block-marque (*République Française*) next to the app logo. Off by default: only a deployment entitled to the mark should display it.
 
 ## Client
 

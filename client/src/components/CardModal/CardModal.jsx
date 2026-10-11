@@ -526,32 +526,30 @@ const CardModal = React.memo(
               </div>
             </section>
           )}
-          {(canEdit || canEditCommentActivities || activities.length > 0) && (
-            <section className={classNames(styles.cardModalSection, styles.cardActivitiesSection)}>
-              <div className={styles.cardModalSectionLeft}>
-                <Icon name="comment" type="outlined" size="small" />
+          <section className={classNames(styles.cardModalSection, styles.cardActivitiesSection)}>
+            <div className={styles.cardModalSectionLeft}>
+              <Icon name="comment" type="outlined" size="small" />
+            </div>
+            <div className={styles.cardModalSectionRight}>
+              <div className={styles.sectionTitle}>{t('common.commentsAndActivities')}</div>
+              <div className={styles.detailsItemContent}>
+                <Activities
+                  items={activities}
+                  isFetching={isActivitiesFetching}
+                  isAllFetched={isAllActivitiesFetched}
+                  isDetailsVisible={false}
+                  // isDetailsFetching={isActivitiesDetailsFetching}
+                  canEdit={canEditCommentActivities}
+                  canEditAllComments={canEditAllCommentActivities}
+                  onFetch={onActivitiesFetch}
+                  // onDetailsToggle={onActivitiesDetailsToggle}
+                  onCommentCreate={onCommentActivityCreate}
+                  onCommentUpdate={onCommentActivityUpdate}
+                  onCommentDelete={onCommentActivityDelete}
+                />
               </div>
-              <div className={styles.cardModalSectionRight}>
-                <div className={styles.sectionTitle}>{t('common.commentsAndActivities')}</div>
-                <div className={styles.detailsItemContent}>
-                  <Activities
-                    items={activities}
-                    isFetching={isActivitiesFetching}
-                    isAllFetched={isAllActivitiesFetched}
-                    isDetailsVisible={false}
-                    // isDetailsFetching={isActivitiesDetailsFetching}
-                    canEdit={canEditCommentActivities}
-                    canEditAllComments={canEditAllCommentActivities}
-                    onFetch={onActivitiesFetch}
-                    // onDetailsToggle={onActivitiesDetailsToggle}
-                    onCommentCreate={onCommentActivityCreate}
-                    onCommentUpdate={onCommentActivityUpdate}
-                    onCommentDelete={onCommentActivityDelete}
-                  />
-                </div>
-              </div>
-            </section>
-          )}
+            </div>
+          </section>
         </div>
       </div>
     );

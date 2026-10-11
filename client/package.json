@@ -100,7 +100,7 @@
     "react": "19.1.0",
     "react-app-rewired": "^2.2.1",
     "react-datepicker": "^8.7.0",
-    "react-dom": "19.1.0",
+    "react-dom": "19.2.8",
     "react-dropzone": "^14.3.5",
     "react-i18next": "15.4.1",
     "react-markdown": "^8.0.7",

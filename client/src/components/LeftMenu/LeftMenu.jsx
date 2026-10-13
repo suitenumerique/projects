@@ -78,24 +78,24 @@ const LeftMenu = React.memo(
             className={styles.projectsSelect}
           />
         </div>
-        <div className={styles.topBar}>
-          <BoardCreateStepPopover
-            onCreate={onBoardAdd}
-            onCreateFromTemplate={onBoardDuplicate}
-            templateBoards={templateBoards}
-            hideCloseButton
-          >
-            <Button
-              color="brand"
-              variant="primary"
-              className={styles.addBoardButton}
-              icon={<Icon name="add" type="outlined" />}
-              size="medium"
+        {canEditProject && (
+          <div className={styles.topBar}>
+            <BoardCreateStepPopover
+              onCreate={onBoardAdd}
+              onCreateFromTemplate={onBoardDuplicate}
+              templateBoards={templateBoards}
+              hideCloseButton
             >
-              <span className={styles.addBoardButtonText}>{t('action.newBoard')}</span>
-            </Button>
-          </BoardCreateStepPopover>
-          {canEditProject && (
+              <Button
+                color="brand"
+                variant="primary"
+                className={styles.addBoardButton}
+                icon={<Icon name="add" type="outlined" />}
+                size="medium"
+              >
+                <span className={styles.addBoardButtonText}>{t('action.newBoard')}</span>
+              </Button>
+            </BoardCreateStepPopover>
             <Button
               onClick={handleProjectSettingsClick}
               color="neutral"
@@ -103,8 +103,8 @@ const LeftMenu = React.memo(
               icon={<Icon name="settings" type="outlined" />}
               size="medium"
             />
-          )}
-        </div>
+          </div>
+        )}
         <div className={styles.spaces}>
           <div className={styles.space}>
             <p className={styles.spaceTitle}>

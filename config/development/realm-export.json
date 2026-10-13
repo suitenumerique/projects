@@ -73,6 +73,21 @@
           "temporary": false
         }
       ]
+    },
+    {
+      "username": "test.user2",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Test",
+      "lastName": "User 2",
+      "email": "user2.test@numerique.gouv.fr",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ]
     }
   ]
 }

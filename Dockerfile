@@ -1,4 +1,4 @@
-ARG NODE_VERSION=22.21.1
+ARG NODE_VERSION=22.23.3
 
 FROM node:${NODE_VERSION}-alpine AS server-dependencies
 
@@ -24,7 +24,12 @@ RUN DISABLE_ESLINT_PLUGIN=true npm run build
 
 FROM node:${NODE_VERSION}-alpine
 
-RUN apk add bash --no-cache
+# Apply the latest Alpine security patches (libssl3/libcrypto3, musl, zlib, ...)
+# and drop the bundled npm CLI: the runtime only ever runs `node`, so removing
+# npm eliminates its vulnerable internals (pacote, sigstore, glob, tar, ...).
+RUN apk upgrade --no-cache \
+  && apk add bash --no-cache \
+  && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 USER node
 WORKDIR /app

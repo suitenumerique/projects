@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- Upgrade server dependencies with known vulnerabilities (bcrypt 6, nodemailer 10, sharp 0.35, express, socket.io, ws, lodash, validator)
+- Upgrade client dependencies with known vulnerabilities (axios, js-cookie, lodash, nanoid, react-router-dom, js-yaml)
+
 ## [1.3.0] - 2026-05-28
 
 ### Added

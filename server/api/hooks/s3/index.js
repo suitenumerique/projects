@@ -26,7 +26,9 @@ module.exports = function defineS3Hook(sails) {
 
       client = new S3Client({
         endpoint: sails.config.custom.s3Endpoint,
-        region: sails.config.custom.s3Region || '-',
+        // With a custom endpoint the region is only used for SigV4 signing, but recent SDK
+        // versions require it to be a valid hostname component (e.g. '-' is rejected).
+        region: sails.config.custom.s3Region || 'us-east-1',
         credentials: {
           accessKeyId: sails.config.custom.s3AccessKeyId,
           secretAccessKey: sails.config.custom.s3SecretAccessKey,

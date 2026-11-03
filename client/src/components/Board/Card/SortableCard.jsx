@@ -9,11 +9,23 @@ import CardContainer from '../../../containers/CardContainer';
 import styles from '../Board.module.scss';
 
 const CardPointerSensor = PointerSensor.configure({
-  activationConstraints: [
-    new PointerActivationConstraints.Distance({
-      value: 5,
-    }),
-  ],
+  activationConstraints: (event) => {
+    // on touch devices, require a long press so that swiping scrolls the lists instead of moving cards
+    if (event.pointerType === 'touch') {
+      return [
+        new PointerActivationConstraints.Delay({
+          value: 250,
+          tolerance: 5,
+        }),
+      ];
+    }
+
+    return [
+      new PointerActivationConstraints.Distance({
+        value: 5,
+      }),
+    ];
+  },
 });
 
 function SortableCard({ id, listId, canEdit, onSortableReady }) {

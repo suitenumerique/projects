@@ -208,6 +208,12 @@ $board-surface-shadow: 0px 1px 2px 0px #0C1A2B4D;
 
   .card.draggable {
     cursor: grab;
+
+    // the long press used to start dragging on touch devices must not trigger text selection or the iOS callout
+    @media (hover: none) {
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
   }
 
   .card[data-disabled="true"] {

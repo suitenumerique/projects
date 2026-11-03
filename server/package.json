@@ -69,7 +69,10 @@
   },
   "overrides": {
     "proxy-addr": "2.0.8",
-    "compression": "1.8.2"
+    "compression": "1.8.2",
+    "skipper": {
+      "body-parser": "^1.20.9"
+    }
   },
   "engines": {
     "node": ">=22.21.1"

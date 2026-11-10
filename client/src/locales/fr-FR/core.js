@@ -15,6 +15,20 @@ export default {
 
   translation: {
     common: {
+      copied: 'Copié',
+      apiTokens: 'Jeton d’API',
+      apiToken: 'Jeton',
+      apiTokenExpiration: 'Expiration',
+      apiTokenExpiresInDays_one: 'Dans {{count}} jour',
+      apiTokenExpiresInDays_other: 'Dans {{count}} jours',
+      apiTokenNeverExpires: 'N’expire jamais',
+      apiTokenExpiresOn: 'Expire le {{date}}',
+      apiTokenLastUsedOn: 'Utilisé le {{date}}',
+      apiTokenNeverUsed: 'Jamais utilisé',
+      apiTokenCopyNow: 'Copiez ce jeton maintenant : il ne sera plus affiché.',
+      apiTokensLoadError: 'Impossible de charger les jetons d’API.',
+      apiTokenCreateError: 'Impossible de générer le jeton d’API.',
+      apiTokenDeleteError: 'Impossible de révoquer le jeton d’API.',
       account: 'Compte',
       actions: 'Actions',
       addAttachment_title: 'Ajouter une pièce jointe',
@@ -213,6 +227,9 @@ export default {
     },
 
     action: {
+      copy: 'Copier',
+      generateApiToken: 'Générer un jeton',
+      revoke: 'Révoquer',
       addAnotherCard: 'Ajouter une autre carte',
       addAnotherList: 'Ajouter une autre liste',
       addAnotherTask: 'Ajouter une autre tâche',

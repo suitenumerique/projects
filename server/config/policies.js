@@ -20,8 +20,20 @@ module.exports.policies = {
 
   'stats/index': 'is-stats-authorized',
 
-  'users/create': ['is-authenticated', 'is-admin'],
-  'users/delete': ['is-authenticated', 'is-admin'],
+  // API tokens can read users (users/show, users/search) but never modify them.
+  'users/create': ['is-authenticated', 'is-session-authenticated', 'is-admin'],
+  'users/delete': ['is-authenticated', 'is-session-authenticated', 'is-admin'],
+  'users/update': ['is-authenticated', 'is-session-authenticated'],
+  'users/update-avatar': ['is-authenticated', 'is-session-authenticated'],
+  'users/update-email': ['is-authenticated', 'is-session-authenticated'],
+  'users/update-password': ['is-authenticated', 'is-session-authenticated'],
+  'users/update-username': ['is-authenticated', 'is-session-authenticated'],
+
+  'access-tokens/delete': ['is-authenticated', 'is-session-authenticated'],
+
+  'api-tokens/index': ['is-authenticated', 'is-session-authenticated'],
+  'api-tokens/create': ['is-authenticated', 'is-session-authenticated'],
+  'api-tokens/delete': ['is-authenticated', 'is-session-authenticated'],
 
   robots: true,
   'show-config': true,

@@ -11,6 +11,20 @@ export default {
 
   translation: {
     common: {
+      copied: 'Copied',
+      apiTokens: 'API token',
+      apiToken: 'Token',
+      apiTokenExpiration: 'Expiration',
+      apiTokenExpiresInDays_one: 'In {{count}} day',
+      apiTokenExpiresInDays_other: 'In {{count}} days',
+      apiTokenNeverExpires: 'Never expires',
+      apiTokenExpiresOn: 'Expires on {{date}}',
+      apiTokenLastUsedOn: 'Used on {{date}}',
+      apiTokenNeverUsed: 'Never used',
+      apiTokenCopyNow: 'Copy this token now: it will not be shown again.',
+      apiTokensLoadError: 'Unable to load API tokens.',
+      apiTokenCreateError: 'Unable to generate the API token.',
+      apiTokenDeleteError: 'Unable to revoke the API token.',
       account: 'Account',
       actions: 'Actions',
       addAttachment_title: 'Add Attachment',
@@ -208,6 +222,9 @@ export default {
     },
 
     action: {
+      copy: 'Copy',
+      generateApiToken: 'Generate token',
+      revoke: 'Revoke',
       addAnotherCard: 'Add another card',
       addAnotherList: 'Add another list',
       addAnotherTask: 'Add another task',

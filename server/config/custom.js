@@ -133,6 +133,10 @@ module.exports.custom = {
 
   tokenExpiresIn: parseInt(process.env.TOKEN_EXPIRES_IN, 10) || 365,
 
+  // Requests per minute allowed for each personal API token (browser sessions are not limited).
+  apiTokenRateLimitRead: parseInt(process.env.API_TOKEN_RATE_LIMIT_READ, 10) || 300,
+  apiTokenRateLimitWrite: parseInt(process.env.API_TOKEN_RATE_LIMIT_WRITE, 10) || 60,
+
   // Location to receive uploaded files in. Default (non-string value) is a Sails-specific location.
   uploadsTempPath: null,
   uploadsBasePath: sails.config.appPath,

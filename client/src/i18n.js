@@ -82,18 +82,46 @@ i18n
     debug: process.env.NODE_ENV !== 'production',
   });
 
+// Resolve short or non-canonical language codes (e.g. "nl" as provided by
+// DEFAULT_LANGUAGE) to the matching supported locale (e.g. "nl-NL").
+export const resolveLanguage = (language) => {
+  if (!language) {
+    return language;
+  }
+
+  const code = String(language).trim();
+  const exactMatch = languages.find(
+    (languageCode) => languageCode.toLowerCase() === code.toLowerCase(),
+  );
+
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const languagePart = code.split('-')[0].toLowerCase();
+  const matches = languages.filter(
+    (languageCode) => languageCode.split('-')[0].toLowerCase() === languagePart,
+  );
+
+  // Only map unambiguous codes: "nl" -> "nl-NL", while "en" is left untouched
+  // because it could be either "en-GB" or "en-US".
+  return matches.length === 1 ? matches[0] : code;
+};
+
 i18n.loadCoreLocale = async (language = i18n.resolvedLanguage) => {
-  if (language === i18n.options.fallbackLng[0]) {
+  const resolvedLanguage = resolveLanguage(language);
+
+  if (resolvedLanguage === i18n.options.fallbackLng[0]) {
     return;
   }
 
-  const { default: locale } = await import(`./locales/${language}/core`);
+  const { default: locale } = await import(`./locales/${resolvedLanguage}/core`);
 
   Object.keys(locale).forEach((namespace) => {
     if (namespace === 'dateFns') {
-      i18n.dateFns.addLocale(language, locale[namespace]);
+      i18n.dateFns.addLocale(resolvedLanguage, locale[namespace]);
     } else {
-      i18n.addResourceBundle(language, namespace, locale[namespace], true, true);
+      i18n.addResourceBundle(resolvedLanguage, namespace, locale[namespace], true, true);
     }
   });
 };

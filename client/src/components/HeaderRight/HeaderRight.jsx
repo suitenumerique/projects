@@ -90,7 +90,7 @@ const HeaderRight = React.memo(
           </>
         ) : (
           <Button color="brand" variant="tertiary" onClick={onLogin}>
-            Connexion
+            {t('action.logIn')}
           </Button>
         )}
 

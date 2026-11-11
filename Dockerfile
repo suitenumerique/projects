@@ -27,8 +27,10 @@ FROM node:${NODE_VERSION}-alpine
 # Apply the latest Alpine security patches (libssl3/libcrypto3, musl, zlib, ...)
 # and drop the bundled npm CLI: the runtime only ever runs `node`, so removing
 # npm eliminates its vulnerable internals (pacote, sigstore, glob, tar, ...).
+# The zlib floor (CVE-2026-4738) fails the build instead of shipping an old
+# zlib, and changing this line invalidates any cached `apk upgrade` layer.
 RUN apk upgrade --no-cache \
-  && apk add bash --no-cache \
+  && apk add bash 'zlib>=1.4-r0' --no-cache \
   && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 USER node

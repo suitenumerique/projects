@@ -11,7 +11,7 @@ env:
   CONTAINER_REGISTRY: docker.io
   CONTAINER_IMAGE: lasuite/projects
   NODE_OPTIONS: --max_old_space_size=4096
-  NODE_VERSION: 22.23.4
+  NODE_VERSION: 22.23.5
 concurrency:
   # Prevent parallel builds of the same branch
   group: cicd-${{ github.ref }}

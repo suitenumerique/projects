@@ -2,5 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "@radix-ui/react-popover >= 1.2 breaks card popovers (labels, members, due date stay open and stack up). Keep 1.1.x until fixed.",
+      "matchPackageNames": ["@radix-ui/react-popover"],
+      "allowedVersions": "<1.2.0"
+    }
   ]
 }

@@ -5,7 +5,7 @@ import requests from '../requests';
 import selectors from '../../../selectors';
 import actions from '../../../actions';
 import api from '../../../api';
-import i18n from '../../../i18n';
+import i18n, { resolveLanguage } from '../../../i18n';
 import {
   removeAccessToken,
   getAccessToken,
@@ -28,7 +28,7 @@ export function* initializeCore() {
     const resolvedConfig = yield select(selectors.selectConfig);
 
     if (resolvedConfig && resolvedConfig.defaultLanguage) {
-      yield call(i18n.changeLanguage, resolvedConfig.defaultLanguage);
+      yield call(i18n.changeLanguage, resolveLanguage(resolvedConfig.defaultLanguage));
     }
 
     yield call(i18n.loadCoreLocale);
@@ -60,7 +60,7 @@ export function* initializeCore() {
 
   const resolvedConfig = yield select(selectors.selectConfig);
   const language = user.language || (resolvedConfig && resolvedConfig.defaultLanguage) || null;
-  yield call(i18n.changeLanguage, language);
+  yield call(i18n.changeLanguage, resolveLanguage(language));
   yield call(i18n.loadCoreLocale);
 
   yield put(
@@ -94,7 +94,7 @@ export function* changeCoreLanguage(language) {
     yield call(i18n.changeLanguage, i18n.resolvedLanguage);
   } else {
     yield call(i18n.loadCoreLocale, language);
-    yield call(i18n.changeLanguage, language);
+    yield call(i18n.changeLanguage, resolveLanguage(language));
   }
 }
 

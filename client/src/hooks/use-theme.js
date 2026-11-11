@@ -28,8 +28,14 @@ function getStoredTheme() {
   return SYSTEM;
 }
 
+// The "default" theme (also selected by an empty THEME_PREFIX) is the neutral
+// base theme, unlike the government variants "dsfr" and "anct".
+const NEUTRAL_THEME = 'default';
+
 function withPrefix(colorScheme) {
-  return THEME_PREFIX && THEME_PREFIX !== '' ? `${THEME_PREFIX}-${colorScheme}` : colorScheme;
+  return THEME_PREFIX && THEME_PREFIX !== NEUTRAL_THEME
+    ? `${THEME_PREFIX}-${colorScheme}`
+    : colorScheme;
 }
 
 function resolveTheme(theme) {

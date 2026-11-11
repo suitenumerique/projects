@@ -10,6 +10,12 @@ import usePopup from '../../lib/popup/use-popup';
 
 import styles from './HeaderRight.module.scss';
 
+const { THEME_PREFIX } = window;
+
+// La Gaufre is part of the French government suite branding: only show it for
+// the government themes (dsfr/dinum, anct), never for the default (neutral) theme.
+const isGovTheme = THEME_PREFIX === 'dsfr' || THEME_PREFIX === 'anct';
+
 const HeaderRight = React.memo(
   ({
     currentUser,
@@ -90,14 +96,14 @@ const HeaderRight = React.memo(
           </>
         ) : (
           <Button color="brand" variant="tertiary" onClick={onLogin}>
-            Connexion
+            {t('action.logIn')}
           </Button>
         )}
 
-        {gaufre?.variant === 'dinum' && (
+        {isGovTheme && gaufre?.variant === 'dinum' && (
           <LaGaufreV2 widgetPath={gaufre.widgetPath} apiUrl={gaufre.apiUrl} />
         )}
-        {gaufre?.variant === 'anct' && (
+        {isGovTheme && gaufre?.variant === 'anct' && (
           <LagaufreButton apiUrl={gaufre.apiUrl} widgetPath={gaufre.widgetPath} />
         )}
       </>

@@ -5,6 +5,7 @@ import { Input, Select, Switch } from '@gouvfr-lasuite/cunningham-react';
 import { HorizontalSeparator } from '@gouvfr-lasuite/ui-kit';
 
 import { useTheme } from '../../../hooks/use-theme';
+import { resolveLanguage } from '../../../i18n';
 import locales from '../../../locales';
 
 import styles from './AccountPane.module.scss';
@@ -25,8 +26,12 @@ const AccountPane = React.memo(
     const [t] = useTranslation();
     const { theme, setTheme, disableDarkMode } = useTheme();
 
-    const filteredLocales = supportedLanguages
-      ? locales.filter((locale) => supportedLanguages.includes(locale.language))
+    const enabledLanguages = supportedLanguages
+      ? supportedLanguages.map(resolveLanguage)
+      : undefined;
+
+    const filteredLocales = enabledLanguages
+      ? locales.filter((locale) => enabledLanguages.includes(locale.language))
       : locales;
 
     const handleSubscribeToOwnCardsChange = useCallback(() => {
@@ -107,7 +112,7 @@ const AccountPane = React.memo(
                 label: locale.name,
               })),
             ]}
-            defaultValue={language || defaultLanguage || 'auto'}
+            defaultValue={resolveLanguage(language || defaultLanguage) || 'auto'}
             clearable={false}
             onChange={(event) => {
               handleLanguageChange(event.target.value);

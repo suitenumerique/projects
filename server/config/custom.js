@@ -36,6 +36,7 @@ const HeaderThemeSchema = z.object({
   default: LocaleThemeHeaderSchema,
   fr: LocaleThemeHeaderSchema.optional(),
   en: LocaleThemeHeaderSchema.optional(),
+  nl: LocaleThemeHeaderSchema.optional(),
 });
 
 const LocaleThemeFooterSchema = z.object({

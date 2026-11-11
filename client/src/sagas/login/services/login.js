@@ -5,7 +5,7 @@ import { replace } from '../../../lib/redux-router';
 import selectors from '../../../selectors';
 import actions from '../../../actions';
 import api from '../../../api';
-import i18n from '../../../i18n';
+import i18n, { resolveLanguage } from '../../../i18n';
 import { setAccessToken, setIdToken } from '../../../utils/access-token-storage';
 import Paths from '../../../constants/Paths';
 
@@ -13,7 +13,7 @@ export function* initializeLogin() {
   const { item: config } = yield call(api.getConfig); // TODO: handle error
 
   if (config && config.defaultLanguage) {
-    yield call(i18n.changeLanguage, config.defaultLanguage);
+    yield call(i18n.changeLanguage, resolveLanguage(config.defaultLanguage));
   }
 
   yield call(i18n.loadCoreLocale);

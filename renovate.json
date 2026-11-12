@@ -5,9 +5,9 @@
   ],
   "packageRules": [
     {
-      "description": "@radix-ui/react-popover >= 1.2 breaks card popovers (labels, members, due date stay open and stack up). Keep 1.1.x until fixed.",
+      "description": "@radix-ui/react-popover after 1.1.15 pins its own @radix-ui/react-dismissable-layer, separate from the copy the other Radix components (mdxeditor) share, so card popovers (labels, members, due date) stay open and stack up. Upgrade it together with the other Radix packages.",
       "matchPackageNames": ["@radix-ui/react-popover"],
-      "allowedVersions": "<1.2.0"
+      "enabled": false
     }
   ]
 }

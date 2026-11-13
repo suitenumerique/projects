@@ -184,6 +184,8 @@ export default {
         'There is no preview available for this attachment.',
       time: 'Time',
       title: 'Title',
+      toAnotherBoard: 'To another board',
+      toAnotherList: 'To another list',
       userActions_title: 'User Actions',
       userAddedThisCardToList: '<0>{{user}}</0> added this card to <1>{{list}}</1>',
       userAssignedMember: '<0>{{user}}</0> assigned <1>{{member}}</1>',

@@ -1,16 +1,87 @@
 :global(#app) {
-  .selectorContainer {
-    margin-bottom: 12px;
+  .wrapper {
+    width: 320px;
+    max-width: calc(100vw - 40px);
   }
 
-  .text {
-    font-size: 12px;
-    font-weight: bold;
-    padding-bottom: 6px;
+  .rows {
+    margin: 0 -12px;
+    max-height: 320px;
+    overflow-y: auto;
   }
 
-  .selector {
+  .row {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: var(--c--components--modal--color);
+    cursor: pointer;
     display: flex;
-    justify-content: flex-start;
+    font-family: inherit;
+    gap: 12px;
+    justify-content: space-between;
+    min-height: 40px;
+    padding: 8px 16px;
+    text-align: left;
+    width: 100%;
+
+    &:hover:not(:disabled) {
+      background: var(--c--contextuals--background--semantic--overlay--primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--c--contextuals--border--semantic--neutral--tertiary);
+      outline-offset: -2px;
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+  }
+
+  .rowSelected {
+    background: var(--c--contextuals--background--semantic--overlay--primary);
+  }
+
+  .rowText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .rowLabel {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rowHint {
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rowIcon {
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
+    flex-shrink: 0;
+  }
+
+  .empty {
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
+    display: flex;
+    font-size: 0.8125rem;
+    justify-content: center;
+    padding: 12px 16px;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 12px;
   }
 }

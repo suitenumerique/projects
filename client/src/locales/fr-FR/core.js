@@ -189,6 +189,8 @@ export default {
         "Il n'y a pas d'aperçu disponible pour cette pièce jointe.",
       time: 'Temps',
       title: 'Titre',
+      toAnotherBoard: 'Vers un autre tableau',
+      toAnotherList: 'Vers une autre liste',
       userActions_title: "Actions de l'utilisateur",
       userAddedThisCardToList: '<0>{{user}}</0> a créé la carte dans la liste <1>{{list}}</1>',
       userAssignedMember: '<0>{{user}}</0> a assigné <1>{{member}}</1>',

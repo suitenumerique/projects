@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@gouvfr-lasuite/cunningham-react';
 import { Icon } from '@gouvfr-lasuite/ui-kit';
 import getDateFormat from '../../../../utils/get-date-format';
+import { splitMentions } from '../../../../utils/mentions';
 import CommentEdit from '../CommentEdit';
 import User from '../../../../ui/User';
 import CommentActionsStep from '../../../../steps/CommentActionsStep';
@@ -14,7 +15,7 @@ import styles from './CommentItem.module.scss';
 
 const URL_REGEX = /https?:\/\/[^\s]+/g;
 
-function renderTextWithLinks(text) {
+function renderLinks(text, keyPrefix) {
   const parts = [];
   let lastIndex = 0;
   let match;
@@ -24,7 +25,12 @@ function renderTextWithLinks(text) {
       parts.push(text.slice(lastIndex, match.index));
     }
     parts.push(
-      <a key={match.index} href={match[0]} target="_blank" rel="noopener noreferrer">
+      <a
+        key={`${keyPrefix}-${match.index}`}
+        href={match[0]}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {match[0]}
       </a>,
     );
@@ -36,8 +42,37 @@ function renderTextWithLinks(text) {
   return parts;
 }
 
+function renderText(text, currentUserId) {
+  return splitMentions(text).flatMap((part, index) => {
+    if (typeof part === 'string') {
+      return renderLinks(part, index);
+    }
+
+    return (
+      <span
+        // eslint-disable-next-line react/no-array-index-key
+        key={`mention-${index}`}
+        className={classNames(styles.mention, part.userId === currentUserId && styles.mentionMe)}
+      >
+        @{part.name}
+      </span>
+    );
+  });
+}
+
 const CommentItem = React.memo(
-  ({ data, createdAt, isPersisted, user, canEdit, canDelete, onUpdate, onDelete }) => {
+  ({
+    data,
+    createdAt,
+    isPersisted,
+    user,
+    currentUserId,
+    mentionableUsers,
+    canEdit,
+    canDelete,
+    onUpdate,
+    onDelete,
+  }) => {
     const [t] = useTranslation();
     const [isCommentActionsPopoverOpen, setIsCommentActionsPopoverOpen] = useState(false);
 
@@ -63,8 +98,9 @@ const CommentItem = React.memo(
           <CommentEdit
             ref={commentEdit}
             defaultData={data}
+            mentionableUsers={mentionableUsers}
             onUpdate={onUpdate}
-            text={<div className={styles.text}>{renderTextWithLinks(data.text)}</div>}
+            text={<div className={styles.text}>{renderText(data.text, currentUserId)}</div>}
             actions={
               <div className={styles.header}>
                 <div className={styles.title}>
@@ -111,10 +147,16 @@ CommentItem.propTypes = {
   createdAt: PropTypes.instanceOf(Date).isRequired,
   isPersisted: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  currentUserId: PropTypes.string,
+  mentionableUsers: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   canEdit: PropTypes.bool.isRequired,
   canDelete: PropTypes.bool.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+};
+
+CommentItem.defaultProps = {
+  currentUserId: undefined,
 };
 
 export default CommentItem;

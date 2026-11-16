@@ -27,11 +27,23 @@ const buildAndSendEmail = async (board, card, action, actorUser, notifiableUser)
 
   switch (action.type) {
     case Action.Types.COMMENT_CARD:
-      subject = `Nouveau commentaire : ${card.name}`;
-      heading = 'Nouveau commentaire !';
-      body =
-        `<p>${actorName} a ajouté un commentaire dans la carte suivante : ${cardName} ` +
-        `dans le tableau ${boardName}</p>`;
+      if (
+        sails.helpers.comments.parseMentionedUserIds(action.data.text).includes(notifiableUser.id)
+      ) {
+        subject = `Vous avez été mentionné : ${card.name}`;
+        heading = 'Vous avez été mentionné !';
+        body =
+          `<p>${actorName} vous a mentionné dans un commentaire de la carte ${cardName} ` +
+          `dans le tableau ${boardName} :</p>` +
+          `<blockquote style="margin: 16px 0; padding: 8px 16px; border-left: 3px solid #dddddd; color: #3a3a3a;">` +
+          `${sails.helpers.comments.formatText(action.data.text)}</blockquote>`;
+      } else {
+        subject = `Nouveau commentaire : ${card.name}`;
+        heading = 'Nouveau commentaire !';
+        body =
+          `<p>${actorName} a ajouté un commentaire dans la carte suivante : ${cardName} ` +
+          `dans le tableau ${boardName}</p>`;
+      }
 
       break;
     case Action.Types.ADD_MEMBER_TO_CARD:

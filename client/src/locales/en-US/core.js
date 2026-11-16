@@ -207,6 +207,7 @@ export default {
       userChangedDueDateOfCard: '<0>{{user}}</0> modified the due date of <1>{{card}}</1>',
       userChangedDueDateOfThisCard: '<0>{{user}}</0> modified the due date of this card',
       userLeftNewCommentToCard: '<0>{{user}}</0> added a comment on <1>{{card}}</1>',
+      userMentionedYouInCard: '<0>{{user}}</0> mentioned you in <1>{{card}}</1>',
       userMovedCardFromListToList:
         '<0>{{user}}</0> moved <1>{{card}}</1> from <2>{{fromList}}</2> to <3>{{toList}}</3>',
       userMovedThisCardFromListToList:

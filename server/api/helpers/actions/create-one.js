@@ -90,8 +90,20 @@ module.exports = {
         action.userId,
       );
 
+      let mentionedUserIds = [];
+      if (action.type === Action.Types.COMMENT_CARD) {
+        mentionedUserIds = await sails.helpers.comments.getMentionedUserIds.with({
+          text: action.data.text,
+          boardId: inputs.board.id,
+          exceptUserIds: [action.userId],
+        });
+      }
+
+      // A mentioned subscriber gets a single notification
+      const notifiableUserIds = _.union(subscriptionUserIds, mentionedUserIds);
+
       await Promise.all(
-        subscriptionUserIds.map(async (userId) =>
+        notifiableUserIds.map(async (userId) =>
           sails.helpers.notifications.createOne.with({
             values: {
               userId,

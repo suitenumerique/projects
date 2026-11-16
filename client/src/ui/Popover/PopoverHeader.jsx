@@ -18,7 +18,12 @@ function PopoverHeader({ title, onBack, onClose }) {
       <span className={styles.popoverTitle}>{title}</span>
       <div className={styles.popoverRight}>
         {onClose && (
-          <button type="button" className={styles.popoverClose} aria-label="Close" onClick={onClose}>
+          <button
+            type="button"
+            className={styles.popoverClose}
+            aria-label="Close"
+            onClick={onClose}
+          >
             <Icon name="close" size="small" />
           </button>
         )}

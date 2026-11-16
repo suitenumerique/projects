@@ -1,0 +1,52 @@
+:global(#app) {
+  .wrapper {
+    position: relative;
+  }
+
+  .suggestions {
+    background-color: var(--c--components--modal--background-color);
+    border: 1px solid var(--c--contextuals--border--semantic--neutral--primary);
+    border-radius: var(--c--components--modal--border-radius);
+    box-shadow: 0 6px 12px -4px var(--c--contextuals--background--semantic--overlay--primary);
+    left: 0;
+    list-style: none;
+    margin: 0;
+    max-width: 320px;
+    min-width: 220px;
+    padding: 4px 0;
+    position: absolute;
+    top: calc(100% + 4px);
+    z-index: 60;
+  }
+
+  .suggestion {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    font-size: 0.875rem;
+    gap: 8px;
+    padding: 6px 12px;
+  }
+
+  .suggestionActive {
+    background: var(--c--contextuals--background--semantic--overlay--primary);
+  }
+
+  .suggestionText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .suggestionName,
+  .suggestionEmail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .suggestionEmail {
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
+    font-size: 0.75rem;
+  }
+}

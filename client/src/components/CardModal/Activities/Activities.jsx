@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 // import { useTranslation } from 'react-i18next';
 
@@ -13,6 +13,7 @@ import styles from './Activities.module.scss';
 const Activities = React.memo(
   ({
     items,
+    boardMemberships,
     isFetching,
     isAllFetched,
     // isDetailsVisible,
@@ -26,6 +27,19 @@ const Activities = React.memo(
     onCommentDelete,
   }) => {
     // const [t] = useTranslation();
+
+    const currentUserId = useMemo(
+      () => boardMemberships.find((membership) => membership.user.isCurrent)?.user.id,
+      [boardMemberships],
+    );
+
+    const mentionableUsers = useMemo(
+      () =>
+        boardMemberships
+          .map((membership) => membership.user)
+          .filter((user) => !user.isCurrent && !user.deletedAt),
+      [boardMemberships],
+    );
 
     // Fetch activities when component mounts
     useEffect(() => {
@@ -54,7 +68,9 @@ const Activities = React.memo(
 
     return (
       <div className={styles.activitiesWrapper}>
-        {canEdit && <CommentCreate onCreate={onCommentCreate} />}
+        {canEdit && (
+          <CommentCreate mentionableUsers={mentionableUsers} onCreate={onCommentCreate} />
+        )}
         <div className={styles.activitiesList}>
           {items.map((item) =>
             item.type === ActivityTypes.COMMENT_CARD ? (
@@ -64,6 +80,8 @@ const Activities = React.memo(
                 createdAt={item.createdAt}
                 isPersisted={item.isPersisted}
                 user={item.user}
+                currentUserId={currentUserId}
+                mentionableUsers={mentionableUsers}
                 canEdit={item.user.isCurrent && canEdit}
                 canDelete={(item.user.isCurrent && canEdit) || canEditAllComments}
                 onUpdate={(data) => handleCommentUpdate(item.id, data)}
@@ -98,6 +116,7 @@ const Activities = React.memo(
 
 Activities.propTypes = {
   items: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   isFetching: PropTypes.bool.isRequired,
   isAllFetched: PropTypes.bool.isRequired,
   // isDetailsVisible: PropTypes.bool.isRequired,

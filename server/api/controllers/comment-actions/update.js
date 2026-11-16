@@ -72,6 +72,10 @@ module.exports = {
       data: _.pick(inputs, ['text']),
     };
 
+    const previouslyMentionedUserIds = sails.helpers.comments.parseMentionedUserIds(
+      action.data.text,
+    );
+
     action = await sails.helpers.actions.updateOne.with({
       values,
       project,
@@ -86,6 +90,29 @@ module.exports = {
     if (!action) {
       throw Errors.COMMENT_ACTION_NOT_FOUND;
     }
+
+    // Only notify users who were not already mentioned before this edit
+    const newlyMentionedUserIds = await sails.helpers.comments.getMentionedUserIds.with({
+      text: action.data.text,
+      boardId: board.id,
+      exceptUserIds: [currentUser.id, action.userId, ...previouslyMentionedUserIds],
+    });
+
+    await Promise.all(
+      newlyMentionedUserIds.map((userId) =>
+        sails.helpers.notifications.createOne.with({
+          values: {
+            userId,
+            action,
+          },
+          project,
+          board,
+          list,
+          card,
+          actorUser: currentUser,
+        }),
+      ),
+    );
 
     return {
       item: action,

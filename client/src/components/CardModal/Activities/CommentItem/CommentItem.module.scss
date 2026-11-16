@@ -68,4 +68,16 @@
     word-break: break-all;
   }
 
+
+  .mention {
+    background: var(--c--contextuals--background--semantic--brand--tertiary);
+    border-radius: 4px;
+    color: var(--c--contextuals--content--semantic--brand--primary);
+    font-weight: 500;
+    padding: 0 2px;
+  }
+
+  .mentionMe {
+    background: var(--c--contextuals--background--semantic--brand--secondary);
+  }
 }

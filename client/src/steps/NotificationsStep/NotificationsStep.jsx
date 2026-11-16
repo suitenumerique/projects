@@ -65,7 +65,11 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
       case ActivityTypes.COMMENT_CARD:
         return (
           <Trans
-            i18nKey="common.userLeftNewCommentToCard"
+            i18nKey={
+              activity.isMention
+                ? 'common.userMentionedYouInCard'
+                : 'common.userLeftNewCommentToCard'
+            }
             values={{
               user: activity.user.name,
               card: card.name,

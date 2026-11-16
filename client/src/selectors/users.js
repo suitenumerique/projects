@@ -1,8 +1,9 @@
 import { createSelector } from 'redux-orm';
 
 import orm from '../orm';
-import { BoardMembershipRoles } from '../constants/Enums';
+import { ActivityTypes, BoardMembershipRoles } from '../constants/Enums';
 import { isLocalId } from '../utils/local-id';
+import { getMentionedUserIds } from '../utils/mentions';
 
 export const selectCurrentUserId = ({ auth: { userId } }) => userId;
 
@@ -129,6 +130,9 @@ export const selectNotificationsForCurrentUser = createSelector(
         activity: notificationModel.activity && {
           ...notificationModel.activity.ref,
           user: notificationModel.activity.user.ref,
+          isMention:
+            notificationModel.activity.type === ActivityTypes.COMMENT_CARD &&
+            getMentionedUserIds(notificationModel.activity.data.text).includes(id),
         },
         card: notificationModel.card && notificationModel.card.ref,
       }));

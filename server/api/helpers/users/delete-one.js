@@ -34,6 +34,10 @@ module.exports = {
       userId: inputs.record.id,
     });
 
+    await ApiToken.destroy({
+      userId: inputs.record.id,
+    });
+
     const user = await User.updateOne({
       id: inputs.record.id,
       deletedAt: null,

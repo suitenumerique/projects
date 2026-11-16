@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '@gouvfr-lasuite/cunningham-react';
+import { Modal, ModalSize } from '@gouvfr-lasuite/cunningham-react';
+import { HorizontalSeparator } from '@gouvfr-lasuite/ui-kit';
 
 import AccountPane from './AccountPane';
+import ApiTokensPane from './ApiTokensPane';
 import User from '../../ui/User';
 
 import styles from './UserSettingsModal.module.scss';
@@ -28,6 +30,7 @@ const UserSettingsModal = React.memo(
     return (
       <Modal
         isOpen
+        size={ModalSize.MEDIUM}
         title={
           <div className={styles.modalTitle}>
             <User name={name} avatarUrl={avatarUrl} size="medium" />
@@ -50,6 +53,8 @@ const UserSettingsModal = React.memo(
           onUpdate={onUpdate}
           onLanguageUpdate={onLanguageUpdate}
         />
+        <HorizontalSeparator />
+        <ApiTokensPane />
       </Modal>
     );
   },

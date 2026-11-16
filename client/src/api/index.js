@@ -2,6 +2,7 @@ import http from './http';
 import socket from './socket';
 import root from './root';
 import accessTokens from './access-tokens';
+import apiTokens from './api-tokens';
 import users from './users';
 import projects from './projects';
 import projectManagers from './project-managers';
@@ -24,6 +25,7 @@ export { http, socket };
 export default {
   ...root,
   ...accessTokens,
+  ...apiTokens,
   ...users,
   ...projects,
   ...projectManagers,

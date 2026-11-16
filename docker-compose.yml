@@ -108,6 +108,8 @@ services:
       # - SHOW_DETAILED_AUTH_ERRORS=false # Set to true to show more detailed authentication error messages. It should not be enabled without a rate limiter for security reasons.
       # - TRUST_PROXY=0
       # - TOKEN_EXPIRES_IN=365 # In days
+      # - API_TOKEN_RATE_LIMIT_READ=300 # Requests per minute per API token
+      # - API_TOKEN_RATE_LIMIT_WRITE=60 # Requests per minute per API token
 
       # related: https://github.com/knex/knex/issues/2354
       # As knex does not pass query parameters from the connection string we

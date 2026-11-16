@@ -14,7 +14,6 @@ const BoardTreeItem = React.memo(
     onToggle,
     onClick,
     onEdit,
-    onUpdate,
     onDelete,
     disableHover,
   }) => {
@@ -54,7 +53,6 @@ BoardTreeItem.propTypes = {
   canEdit: PropTypes.bool.isRequired,
   onToggle: PropTypes.func,
   onClick: PropTypes.func,
-  onUpdate: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   disableHover: PropTypes.bool,

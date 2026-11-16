@@ -1,3 +1,6 @@
+// subtle elevation for board surfaces; the modal shadow token is too heavy here since ui-kit 0.28
+$board-surface-shadow: 0px 1px 2px 0px #0C1A2B4D;
+
 :global(#app) {
 
   a {
@@ -30,11 +33,11 @@
   }
 
   .dragOverlay.list {
-    box-shadow: var(--c--components--modal--box-shadow);
+    box-shadow: $board-surface-shadow;
   }
 
   .dragOverlay.card {
-    box-shadow: var(--c--components--modal--box-shadow);
+    box-shadow: $board-surface-shadow;
     width: 256px;
   }
 
@@ -44,7 +47,7 @@
     width: 272px;
     flex-shrink: 0;
     position: relative;
-    box-shadow: var(--c--components--modal--box-shadow);
+    box-shadow: $board-surface-shadow;
     transition: background-color 0.2s ease, border 0.2s ease, opacity 0.2s ease;
     height: fit-content;
     max-height: calc(100vh - 125px);
@@ -57,7 +60,7 @@
       height: 32px;
       width: 32px;
       flex-shrink: 0;
-      background-color: var(--c--contextuals--background--semantic--overlay--primary);
+      background-color: transparent;
       color: var(--c--contextuals--content--semantic--neutral--primary);
       padding: 0;
       display: flex;
@@ -71,7 +74,7 @@
 
     &.popoverOpened {
       .listHeaderButton {
-        background-color: var(--c--contextuals--background--semantic--overlay--primary);
+        background-color: transparent;
       }
     }
 
@@ -205,6 +208,12 @@
 
   .card.draggable {
     cursor: grab;
+
+    // the long press used to start dragging on touch devices must not trigger text selection or the iOS callout
+    @media (hover: none) {
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
   }
 
   .card[data-disabled="true"] {
@@ -213,7 +222,7 @@
   }
 
   .card[data-disabled="true"]:hover {
-    box-shadow: var(--c--components--modal--box-shadow);
+    box-shadow: $board-surface-shadow;
   }
 
   .card.dragging {

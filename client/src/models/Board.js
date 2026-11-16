@@ -18,6 +18,12 @@ export default class extends BaseModel {
     isFetching: attr({
       getDefault: () => null,
     }),
+    includeCardsWithoutMembers: attr({
+      getDefault: () => false,
+    }),
+    includeCardsWithoutLabels: attr({
+      getDefault: () => false,
+    }),
     projectId: fk({
       to: 'Project',
       as: 'project',
@@ -47,12 +53,14 @@ export default class extends BaseModel {
 
         break;
       case ActionTypes.LOCATION_CHANGE_HANDLE__BOARD_FETCH:
-      case ActionTypes.BOARD_FETCH:
-        Board.withId(payload.id).update({
-          isFetching: true,
-        });
+      case ActionTypes.BOARD_FETCH: {
+        const boardModel = Board.withId(payload.id);
+        if (boardModel) {
+          boardModel.update({ isFetching: true });
+        }
 
         break;
+      }
       case ActionTypes.SOCKET_RECONNECT_HANDLE:
         Board.all().delete();
 
@@ -96,11 +104,19 @@ export default class extends BaseModel {
 
         break;
       case ActionTypes.USER_TO_BOARD_FILTER_ADD:
-        Board.withId(payload.boardId).filterUsers.add(payload.id);
+        if (payload.id === null) {
+          Board.withId(payload.boardId).update({ includeCardsWithoutMembers: true });
+        } else {
+          Board.withId(payload.boardId).filterUsers.add(payload.id);
+        }
 
         break;
       case ActionTypes.USER_FROM_BOARD_FILTER_REMOVE:
-        Board.withId(payload.boardId).filterUsers.remove(payload.id);
+        if (payload.id === null) {
+          Board.withId(payload.boardId).update({ includeCardsWithoutMembers: false });
+        } else {
+          Board.withId(payload.boardId).filterUsers.remove(payload.id);
+        }
 
         break;
       case ActionTypes.PROJECT_CREATE_HANDLE:
@@ -122,6 +138,11 @@ export default class extends BaseModel {
             });
           });
         }
+
+        break;
+      case ActionTypes.BOARD_DUPLICATE__SUCCESS:
+      case ActionTypes.BOARD_DUPLICATE_HANDLE:
+        Board.upsert(payload.board);
 
         break;
       case ActionTypes.BOARD_CREATE:
@@ -168,11 +189,19 @@ export default class extends BaseModel {
         break;
       }
       case ActionTypes.LABEL_TO_BOARD_FILTER_ADD:
-        Board.withId(payload.boardId).filterLabels.add(payload.id);
+        if (payload.id === null) {
+          Board.withId(payload.boardId).update({ includeCardsWithoutLabels: true });
+        } else {
+          Board.withId(payload.boardId).filterLabels.add(payload.id);
+        }
 
         break;
       case ActionTypes.LABEL_FROM_BOARD_FILTER_REMOVE:
-        Board.withId(payload.boardId).filterLabels.remove(payload.id);
+        if (payload.id === null) {
+          Board.withId(payload.boardId).update({ includeCardsWithoutLabels: false });
+        } else {
+          Board.withId(payload.boardId).filterLabels.remove(payload.id);
+        }
 
         break;
       case ActionTypes.TEXT_FILTER_IN_CURRENT_BOARD: {

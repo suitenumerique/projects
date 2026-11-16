@@ -26,6 +26,35 @@
     margin-left: 4px;
   }
 
+  /* Statuses */
+
+  .wrapperDueSoon {
+    background-color: var(--c--contextuals--background--semantic--warning--secondary);
+    color: var(--c--contextuals--content--semantic--warning--secondary);
+
+    &:hover {
+      background-color: var(--c--contextuals--background--semantic--warning--secondary-hover);
+    }
+  }
+
+  .wrapperOverdue {
+    background-color: var(--c--contextuals--background--semantic--error--secondary);
+    color: var(--c--contextuals--content--semantic--error--secondary);
+
+    &:hover {
+      background-color: var(--c--contextuals--background--semantic--error--secondary-hover);
+    }
+  }
+
+  .wrapperCompleted {
+    background-color: var(--c--contextuals--background--semantic--success--secondary);
+    color: var(--c--contextuals--content--semantic--success--secondary);
+
+    &:hover {
+      background-color: var(--c--contextuals--background--semantic--success--secondary-hover);
+    }
+  }
+
   /* Sizes */
 
   .wrapperTiny {

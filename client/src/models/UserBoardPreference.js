@@ -48,6 +48,15 @@ export default class extends BaseModel {
       case ActionTypes.USER_BOARD_PREFERENCE_UPDATE_HANDLE:
         UserBoardPreference.upsert(payload.userBoardPreference);
         break;
+      case ActionTypes.FOLDER_DELETE: {
+        UserBoardPreference.all()
+          .toModelArray()
+          .filter((p) => p.folderId === payload.id)
+          .forEach((p) => {
+            p.update({ folderId: null });
+          });
+        break;
+      }
       case ActionTypes.FOLDER_DELETE__SUCCESS:
       case ActionTypes.FOLDER_DELETE_HANDLE:
         // Update all user preferences that reference this folder to have folderId: null

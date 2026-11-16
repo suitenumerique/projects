@@ -25,6 +25,12 @@ export function* initializeCore() {
   const accessToken = yield call(getAccessToken);
 
   if (!accessToken) {
+    const resolvedConfig = yield select(selectors.selectConfig);
+
+    if (resolvedConfig && resolvedConfig.defaultLanguage) {
+      yield call(i18n.changeLanguage, resolvedConfig.defaultLanguage);
+    }
+
     yield call(i18n.loadCoreLocale);
 
     yield put({ type: 'SET_INITIALIZING_FALSE' });

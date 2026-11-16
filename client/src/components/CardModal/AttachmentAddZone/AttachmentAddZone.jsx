@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,22 @@ const AttachmentAddZone = React.memo(({ children, onCreate }) => {
     },
     [submit],
   );
+
+  useEffect(() => {
+    const handlePaste = (event) => {
+      const { items } = event.clipboardData || {};
+      if (!items) return;
+
+      Array.from(items).forEach((item) => {
+        if (!item.type.startsWith('image/')) return;
+        const file = item.getAsFile();
+        if (file) submit(file);
+      });
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [submit]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     noClick: true,

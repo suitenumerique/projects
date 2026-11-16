@@ -22,6 +22,8 @@ const mapStateToProps = (state) => {
   const boardMemberships = selectors.selectMembershipsForCurrentBoard(state);
   const searchedUsers = selectors.selectSearchedUsers(state);
   const isSearchingUsers = selectors.selectIsSearchingUsers(state);
+  const cards = selectors.selectCardsWithDetailsForCurrentBoard(state);
+  const lists = selectors.selectListsForCurrentBoard(state);
 
   const isCurrentUserManager = selectors.selectIsCurrentUserManagerForCurrentProject(state);
   const currentUserMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
@@ -49,6 +51,8 @@ const mapStateToProps = (state) => {
     isBoardPublic: currentBoard ? currentBoard.isPublic : false,
     searchedUsers,
     isSearchingUsers,
+    cards,
+    lists,
   };
 };
 

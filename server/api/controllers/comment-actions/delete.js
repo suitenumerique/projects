@@ -41,10 +41,6 @@ module.exports = {
     const isProjectManager = await sails.helpers.users.isProjectManager(currentUser.id, project.id);
 
     if (!isProjectManager) {
-      if (action.userId !== currentUser.id) {
-        throw Errors.COMMENT_ACTION_NOT_FOUND; // Forbidden
-      }
-
       const boardMembership = await BoardMembership.findOne({
         boardId: board.id,
         userId: currentUser.id,
@@ -54,13 +50,15 @@ module.exports = {
         throw Errors.COMMENT_ACTION_NOT_FOUND; // Forbidden
       }
 
-      if (
-        ![BoardMembership.Roles.EDITOR, BoardMembership.Roles.OWNER].includes(
-          boardMembership.role,
-        ) &&
-        !boardMembership.canComment
-      ) {
-        throw Errors.NOT_ENOUGH_RIGHTS;
+      // board owners can delete any comment on their board
+      if (boardMembership.role !== BoardMembership.Roles.OWNER) {
+        if (action.userId !== currentUser.id) {
+          throw Errors.COMMENT_ACTION_NOT_FOUND; // Forbidden
+        }
+
+        if (boardMembership.role !== BoardMembership.Roles.EDITOR && !boardMembership.canComment) {
+          throw Errors.NOT_ENOUGH_RIGHTS;
+        }
       }
     }
 

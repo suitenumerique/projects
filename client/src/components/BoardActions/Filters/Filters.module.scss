@@ -2,6 +2,15 @@
   .search {
     width: 280px;
     height: 36px;
+    --c--components--forms-input--border-radius--focus: 8px;
+
+    input {
+      font-size: 0.875rem;
+    }
+
+    :focus-within {
+      box-shadow: none !important;
+    }
   }
 
   .labelsButton, .membersButton {

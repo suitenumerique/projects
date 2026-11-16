@@ -51,7 +51,7 @@ module.exports = {
     // Determine target folder for position calculation
     const targetFolderId = !_.isUndefined(values.folderId)
       ? values.folderId
-      : existingPreference?.folderId || null;
+      : (existingPreference && existingPreference.folderId) || null;
 
     // Get other boards in the same context (same folder or root) for this user
     const otherPreferences = await UserBoardPreference.find({

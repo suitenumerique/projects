@@ -43,6 +43,7 @@ const mapDispatchToProps = (dispatch) =>
       onFolderAdd: entryActions.createFolder,
       onFolderUpdate: entryActions.updateFolder,
       onFolderDelete: entryActions.deleteFolder,
+      onBoardDuplicate: entryActions.duplicateBoard,
     },
     dispatch,
   );

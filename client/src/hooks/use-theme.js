@@ -76,9 +76,11 @@ export function ThemeProvider({ children }) {
     };
   }, [theme, disableDarkMode]);
 
+  const colorScheme = resolvedTheme.endsWith(DARK) ? DARK : LIGHT;
+
   const value = useMemo(
-    () => ({ theme, resolvedTheme, setTheme, disableDarkMode: !!disableDarkMode }),
-    [theme, resolvedTheme, setTheme, disableDarkMode],
+    () => ({ theme, resolvedTheme, colorScheme, setTheme, disableDarkMode: !!disableDarkMode }),
+    [theme, resolvedTheme, colorScheme, setTheme, disableDarkMode],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

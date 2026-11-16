@@ -81,11 +81,6 @@
       }
     }
   },
-  "gaufre": {
-    "variant": "dinum",
-    "apiUrl": "https://lasuite.numerique.gouv.fr/api/services",
-    "widgetPath": "https://static.suite.anct.gouv.fr/widgets/"
-  },
   "feedback": {
     "default": {
       "items": [

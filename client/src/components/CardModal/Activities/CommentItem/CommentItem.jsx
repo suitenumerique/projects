@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-
 import { Button } from '@gouvfr-lasuite/cunningham-react';
 import { Icon } from '@gouvfr-lasuite/ui-kit';
 import getDateFormat from '../../../../utils/get-date-format';
@@ -12,6 +11,30 @@ import CommentActionsStep from '../../../../steps/CommentActionsStep';
 import usePopup from '../../../../lib/popup';
 
 import styles from './CommentItem.module.scss';
+
+const URL_REGEX = /https?:\/\/[^\s]+/g;
+
+function renderTextWithLinks(text) {
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  // eslint-disable-next-line no-cond-assign
+  while ((match = URL_REGEX.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <a key={match.index} href={match[0]} target="_blank" rel="noopener noreferrer">
+        {match[0]}
+      </a>,
+    );
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return parts;
+}
 
 const CommentItem = React.memo(
   ({ data, createdAt, isPersisted, user, canEdit, canDelete, onUpdate, onDelete }) => {
@@ -41,7 +64,7 @@ const CommentItem = React.memo(
             ref={commentEdit}
             defaultData={data}
             onUpdate={onUpdate}
-            text={<div className={styles.text}>{data.text}</div>}
+            text={<div className={styles.text}>{renderTextWithLinks(data.text)}</div>}
             actions={
               <div className={styles.header}>
                 <div className={styles.title}>

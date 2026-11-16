@@ -200,6 +200,7 @@ export function* duplicateCard(id) {
   }
 
   yield put(actions.duplicateCard.success(localId, card, cardMemberships, cardLabels, tasks));
+  yield call(goToCard, card.id);
 }
 
 export function* duplicateCurrentCard() {

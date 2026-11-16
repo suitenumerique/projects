@@ -1,4 +1,4 @@
-const path = require('path');
+const { buildHeaders } = require('../../../utils/attachment-headers');
 
 const Errors = {
   ATTACHMENT_NOT_FOUND: {
@@ -52,11 +52,10 @@ module.exports = {
       throw Errors.ATTACHMENT_NOT_FOUND;
     }
 
-    this.res.type(attachment.filename);
-    if (!attachment.image && path.extname(attachment.filename) !== '.pdf') {
-      this.res.set('Content-Disposition', 'attachment');
-    }
-    this.res.set('Cache-Control', 'private, max-age=900'); // TODO: move to config
+    this.res.set({
+      ...buildHeaders(attachment),
+      'Cache-Control': 'private, max-age=900', // TODO: move to config
+    });
 
     return exits.success(readStream);
   },

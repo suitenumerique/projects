@@ -17,7 +17,6 @@ module.exports = {
     },
     buttonLabel: {
       type: 'string',
-      defaultsTo: 'Ouvrir Projets',
     },
   },
 
@@ -25,6 +24,7 @@ module.exports = {
 
   fn(inputs) {
     const baseUrl = process.env.BASE_URL || '';
+    const buttonLabel = inputs.buttonLabel || `Ouvrir ${sails.config.custom.serviceName}`;
 
     const logoUrl = `${baseUrl}/logo-projets.png`;
     const gouvLogoUrl = `${baseUrl}/logo-gouv.png`;
@@ -35,7 +35,7 @@ module.exports = {
           <tr>
             <td style="background-color:#3E5DE7;border-radius:4px;height:40px;">
               <a href="${inputs.buttonUrl}" style="display:inline-block;height:40px;line-height:40px;padding:0 20px;color:#ffffff;text-decoration:none;font-size:14px;font-weight:500;">
-                &#8599;&nbsp;&nbsp;${inputs.buttonLabel}
+                &#8599;&nbsp;&nbsp;${buttonLabel}
               </a>
             </td>
           </tr>
@@ -78,7 +78,7 @@ module.exports = {
                 <table role="presentation" cellpadding="0" cellspacing="0">
                   <tr>
                     <td style="vertical-align:middle;">
-                      <img src="${logoUrl}" alt="Projets" height="40" style="display:block;border:0;height:48px;width:auto;" />
+                      <img src="${logoUrl}" alt="${sails.config.custom.serviceName}" height="40" style="display:block;border:0;height:48px;width:auto;" />
                     </td>
                   </tr>
                 </table>

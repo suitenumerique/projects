@@ -59,7 +59,9 @@ Optionnally you could set up:
 
 ### Use a Docker environment
 
-We provide the Docker image [`lasuite/projects:latest`](https://hub.docker.com/r/lasuite/projects) to deploy Projects. Please refer to the [`docker-compose.yml`](./docker-compose.yml) to see what are the main expected settings to run it properly.
+Build the image yourself from the included [`Dockerfile`](./Dockerfile), e.g. `npm run docker:build` (or `docker build -t projects:local -f Dockerfile .`), then push it to your own registry and deploy it there. Please refer to the [`docker-compose.yml`](./docker-compose.yml) to see what are the main expected settings to run it properly.
+
+See [`ENVIRONMENT_VARIABLES.md`](./ENVIRONMENT_VARIABLES.md) for the full list of supported environment variables.
 
 ### Use a Node.js environment
 

@@ -68,6 +68,18 @@ const createSocketEventsChannel = () =>
       emit(entryActions.handleBoardDelete(item));
     };
 
+    const handleFolderCreate = ({ item, requestId }) => {
+      emit(entryActions.handleFolderCreate(item, requestId));
+    };
+
+    const handleFolderUpdate = ({ item }) => {
+      emit(entryActions.handleFolderUpdate(item));
+    };
+
+    const handleFolderDelete = ({ item }) => {
+      emit(entryActions.handleFolderDelete(item));
+    };
+
     const handleUserBoardPreferenceCreate = ({ item }) => {
       emit(entryActions.handleUserBoardPreferenceCreate(item));
     };
@@ -213,6 +225,10 @@ const createSocketEventsChannel = () =>
     socket.on('boardDelete', handleBoardDelete);
     socket.on('boardDuplicate', handleBoardDuplicate);
 
+    socket.on('folderCreate', handleFolderCreate);
+    socket.on('folderUpdate', handleFolderUpdate);
+    socket.on('folderDelete', handleFolderDelete);
+
     socket.on('userBoardPreferenceCreate', handleUserBoardPreferenceCreate);
     socket.on('userBoardPreferenceUpdate', handleUserBoardPreferenceUpdate);
     socket.on('userBoardPreferenceDelete', handleUserBoardPreferenceDelete);
@@ -276,6 +292,10 @@ const createSocketEventsChannel = () =>
       socket.off('boardUpdate', handleBoardUpdate);
       socket.off('boardDelete', handleBoardDelete);
       socket.off('boardDuplicate', handleBoardDuplicate);
+
+      socket.off('folderCreate', handleFolderCreate);
+      socket.off('folderUpdate', handleFolderUpdate);
+      socket.off('folderDelete', handleFolderDelete);
 
       socket.off('userBoardPreferenceCreate', handleUserBoardPreferenceCreate);
       socket.off('userBoardPreferenceUpdate', handleUserBoardPreferenceUpdate);

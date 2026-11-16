@@ -4,6 +4,7 @@ const path = require('path');
 const BASE_URL_PLACEHOLDER = 'BASE_URL_PLACEHOLDER';
 const THEME_PREFIX_PLACEHOLDER = 'THEME_PREFIX_PLACEHOLDER';
 const DISABLE_DARK_MODE_PLACEHOLDER = 'DISABLE_DARK_MODE_PLACEHOLDER';
+const SERVICE_NAME_PLACEHOLDER = 'SERVICE_NAME_PLACEHOLDER';
 
 const replaceInFile = (file, ...pairs) => {
   fs.readFile(file, 'utf8', (readError, data) => {
@@ -31,8 +32,9 @@ const replacePlaceholders = (compiler) => {
     const hasBaseUrl = info.content.indexOf(BASE_URL_PLACEHOLDER) >= 0;
     const hasThemePrefix = info.content.indexOf(THEME_PREFIX_PLACEHOLDER) >= 0;
     const hasDisableDarkMode = info.content.indexOf(DISABLE_DARK_MODE_PLACEHOLDER) >= 0;
+    const hasServiceName = info.content.indexOf(SERVICE_NAME_PLACEHOLDER) >= 0;
 
-    if (!hasBaseUrl && !hasThemePrefix && !hasDisableDarkMode) {
+    if (!hasBaseUrl && !hasThemePrefix && !hasDisableDarkMode && !hasServiceName) {
       return;
     }
 
@@ -52,6 +54,7 @@ const replacePlaceholders = (compiler) => {
         info.targetPath,
         [BASE_URL_PLACEHOLDER, '<%= BASE_URL %>'],
         [THEME_PREFIX_PLACEHOLDER, '<%= THEME_PREFIX %>'],
+        [SERVICE_NAME_PLACEHOLDER, '<%= SERVICE_NAME %>'],
       );
     }
   });
@@ -64,6 +67,7 @@ module.exports = function override(config, env) {
         const newPlugin = plugin;
         newPlugin.replacements.PUBLIC_URL = BASE_URL_PLACEHOLDER;
         newPlugin.replacements.THEME_PREFIX = THEME_PREFIX_PLACEHOLDER;
+        newPlugin.replacements.SERVICE_NAME = SERVICE_NAME_PLACEHOLDER;
 
         return newPlugin;
       }
@@ -78,11 +82,12 @@ module.exports = function override(config, env) {
     };
   }
 
-  // In dev mode, also inject THEME_PREFIX into the HTML interpolation
+  // In dev mode, also inject THEME_PREFIX/SERVICE_NAME into the HTML interpolation
   const plugins = config.plugins.map((plugin) => {
     if (plugin.constructor.name === 'InterpolateHtmlPlugin') {
       const newPlugin = plugin;
       newPlugin.replacements.THEME_PREFIX = process.env.THEME_PREFIX || '';
+      newPlugin.replacements.SERVICE_NAME = process.env.SERVICE_NAME || 'Projets';
 
       return newPlugin;
     }

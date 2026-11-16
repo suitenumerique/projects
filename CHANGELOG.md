@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- Upgrade server dependencies with known vulnerabilities (bcrypt 6, nodemailer 10, sharp 0.35, express, socket.io, ws, lodash, validator)
+- Upgrade client dependencies with known vulnerabilities (axios, js-cookie, lodash, nanoid, react-router-dom, js-yaml)
+
+## [1.3.0] - 2026-05-28
+
+### Added
+
+- Export boards data to CSV
+- Include active filters in URL (shareable filter state)
+- Folder deletion
+- Configurable organization ID claim for OIDC project auto-assignment
+
+### Fixed
+
+- Display issue with long board names
+- Duplicated user in share modal
+- Cmd+Enter incorrectly opening card on Mac
+- Notifications read button
+- Comments not rendered as markdown
+
+### Changed
+
+- Harmonised board actions UI
+- Improved drag-and-drop and rendering performance
+
 ## [1.2.0] - 2026-02-06
 
 ### Added

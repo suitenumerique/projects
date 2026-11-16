@@ -30,7 +30,6 @@ export default class extends BaseModel {
 
   static reducer({ type, payload }, Notification) {
     switch (type) {
-      case ActionTypes.LOCATION_CHANGE_HANDLE:
       case ActionTypes.PROJECT_MANAGER_CREATE_HANDLE:
       case ActionTypes.BOARD_MEMBERSHIP_CREATE_HANDLE:
         if (payload.deletedNotifications) {

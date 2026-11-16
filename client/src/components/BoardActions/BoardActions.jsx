@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@gouvfr-lasuite/cunningham-react';
@@ -8,6 +8,9 @@ import { useUsersSearch } from '../../hooks';
 import { BoardMembershipRoles } from '../../constants/Enums';
 import Badge from '../../ui/Badge';
 import Filters from './Filters';
+import BoardActionsStep from '../../steps/BoardActionsStep';
+import usePopup from '../../lib/popup';
+import exportCardsToCsv from '../../utils/export-cards-to-csv';
 import styles from './BoardActions.module.scss';
 
 const BoardActions = React.memo(
@@ -28,6 +31,8 @@ const BoardActions = React.memo(
     isBoardPublic,
     searchedUsers,
     isSearchingUsers,
+    cards,
+    lists,
     onTextFilterUpdate,
     onUserToFilterAdd,
     onUserFromFilterRemove,
@@ -48,6 +53,8 @@ const BoardActions = React.memo(
 
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
+    const BoardActionsPopover = usePopup(BoardActionsStep);
+
     const handleUpdate = useCallback(
       (data) => {
         onBoardUpdate(currentBoardId, data);
@@ -58,6 +65,10 @@ const BoardActions = React.memo(
     const handleShareClick = useCallback(() => {
       setIsShareModalOpen(true);
     }, []);
+
+    const handleExportCsv = useCallback(() => {
+      exportCardsToCsv(cards, lists, currentBoardName, t);
+    }, [cards, lists, currentBoardName, t]);
 
     const handleShareModalClose = useCallback(() => {
       setIsShareModalOpen(false);
@@ -84,7 +95,7 @@ const BoardActions = React.memo(
     const modalMembers = useMemo(() => {
       return boardMemberships.map((membership) => {
         const isCurrentUserOwner =
-          membership.user.id === currentUser.id && membership.role === BoardMembershipRoles.OWNER;
+          membership.user.id === currentUser?.id && membership.role === BoardMembershipRoles.OWNER;
 
         return {
           id: membership.id,
@@ -102,20 +113,66 @@ const BoardActions = React.memo(
           can_delete: !isCurrentUserOwner,
         };
       });
-    }, [boardMemberships, currentUser.id]);
+    }, [boardMemberships, currentUser?.id]);
 
+    const filterUsersRef = useRef(filterUsers);
+    filterUsersRef.current = filterUsers;
+    const filterLabelsRef = useRef(filterLabels);
+    filterLabelsRef.current = filterLabels;
+
+    // Read URL params into Redux when the board changes (handles shared filtered URLs)
     useEffect(() => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const labelsParam = urlParams.get('labels');
-      if (labelsParam) {
-        const labelIds = labelsParam.split(',').filter((id) => id.trim());
-        labelIds.forEach((labelId) => {
-          if (labelId.trim() && !filterLabels.some((label) => label.id === labelId.trim())) {
-            onLabelToFilterAdd(labelId.trim());
-          }
-        });
-      }
-    }, [filterLabels, onLabelToFilterAdd]);
+      const params = new URLSearchParams(window.location.search);
+
+      const text = params.get('text');
+      if (text) onTextFilterUpdate(text);
+
+      const memberIds = params.get('members');
+      if (memberIds)
+        memberIds
+          .split(',')
+          .filter(Boolean)
+          .filter((id) => !filterUsersRef.current.some((u) => u.id === id))
+          .forEach((id) => onUserToFilterAdd(id));
+      if (params.has('noMembers') && !includeCardsWithoutMembers) onUserToFilterAdd(null);
+
+      const labelIds = params.get('labels');
+      if (labelIds)
+        labelIds
+          .split(',')
+          .filter(Boolean)
+          .filter((id) => !filterLabelsRef.current.some((l) => l.id === id))
+          .forEach((id) => onLabelToFilterAdd(id));
+      if (params.has('noLabels') && !includeCardsWithoutLabels) onLabelToFilterAdd(null);
+    }, [currentBoardId, onTextFilterUpdate, onUserToFilterAdd, onLabelToFilterAdd]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Write Redux filter state to URL so the current view is always shareable
+    useEffect(() => {
+      const params = new URLSearchParams();
+
+      if (filterText) params.set('text', filterText);
+
+      const memberIds = filterUsers.map((u) => u.id).filter(Boolean);
+      if (memberIds.length > 0) params.set('members', memberIds.join(','));
+      if (includeCardsWithoutMembers) params.set('noMembers', '1');
+
+      const labelIds = filterLabels.map((l) => l.id).filter(Boolean);
+      if (labelIds.length > 0) params.set('labels', labelIds.join(','));
+      if (includeCardsWithoutLabels) params.set('noLabels', '1');
+
+      const search = params.toString();
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}${search ? `?${search}` : ''}`,
+      );
+    }, [
+      filterText,
+      filterUsers,
+      includeCardsWithoutMembers,
+      filterLabels,
+      includeCardsWithoutLabels,
+    ]);
 
     return (
       <div className={styles.wrapper}>
@@ -153,6 +210,8 @@ const BoardActions = React.memo(
                   title="Share board"
                   color="neutral"
                   variant="tertiary"
+                  size="small"
+                  className={styles.shareButton}
                   onClick={handleShareClick}
                 >
                   {t('action.share')}
@@ -165,6 +224,25 @@ const BoardActions = React.memo(
               )}
             </div>
           )}
+          <div className={styles.action}>
+            <BoardActionsPopover
+              defaultData={{ name: currentBoardName }}
+              canEdit={false}
+              canDelete={false}
+              canLeave={false}
+              onUpdate={() => {}}
+              onDelete={() => {}}
+              onLeave={() => {}}
+              onExportCsv={handleExportCsv}
+            >
+              <Button
+                color="brand"
+                variant="tertiary"
+                size="small"
+                icon={<Icon name="more_horiz" type="outlined" size="small" />}
+              />
+            </BoardActionsPopover>
+          </div>
         </div>
 
         <ShareModal
@@ -181,6 +259,10 @@ const BoardActions = React.memo(
           accesses={modalMembers}
           invitationRoles={[
             {
+              label: t('common.editor'),
+              value: BoardMembershipRoles.EDITOR,
+            },
+            {
               label: t('common.owner'),
               value: BoardMembershipRoles.OWNER,
             },
@@ -191,10 +273,6 @@ const BoardActions = React.memo(
             {
               label: t('common.commenter'),
               value: 'commenter',
-            },
-            {
-              label: t('common.editor'),
-              value: BoardMembershipRoles.EDITOR,
             },
           ]}
           onDeleteAccess={(e) => {
@@ -233,6 +311,9 @@ const BoardActions = React.memo(
           searchUsersResult={formattedSearchedUsers}
           onInviteUser={(users, role) => {
             users.forEach((user) => {
+              if (boardMemberships.some((m) => m.userId === user.id)) {
+                return;
+              }
               onMembershipCreate({
                 userId: user.id,
                 ...// Replace the virtual commenter role if needed
@@ -295,6 +376,8 @@ BoardActions.propTypes = {
   canEdit: PropTypes.bool.isRequired,
   canEditMemberships: PropTypes.bool.isRequired,
   canSeeMemberships: PropTypes.bool.isRequired,
+  cards: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  lists: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   isBoardPublic: PropTypes.bool.isRequired,
   onTextFilterUpdate: PropTypes.func.isRequired,
   onUserToFilterAdd: PropTypes.func.isRequired,

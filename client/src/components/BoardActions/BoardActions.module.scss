@@ -14,6 +14,7 @@
 
   .boardName {
     min-width: 100px;
+    flex: 1 1 0;
     font-size: 1.375rem;
     font-weight: 700;
     line-height: 34px;
@@ -27,6 +28,7 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
+    flex-shrink: 0;
     gap: 1rem;
   }
 
@@ -35,6 +37,10 @@
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+  }
+
+  .shareButton {
+    height: 36px;
   }
 
 }

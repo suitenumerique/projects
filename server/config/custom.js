@@ -78,6 +78,11 @@ const FaviconThemeSchema = z.object({
 const ThemeSchema = z.object({
   favicon: FaviconThemeSchema.optional(),
   disableDarkMode: z.boolean().optional(),
+  // Overrides Cunningham CSS custom properties (e.g. "--c--globals--colors--brand-500"),
+  // see client/src/assets/styles/cunningham-tokens.css for the full list of names.
+  colors: z.record(z.string(), z.string()).optional(),
+  // Overrides the base/accent font family, independently of THEME_PREFIX.
+  fontFamily: z.string().min(1).optional(),
   header: HeaderThemeSchema.optional(),
   footer: z
     .object({
@@ -123,6 +128,8 @@ module.exports.custom = {
   baseUrl: process.env.BASE_URL,
   baseUrlPath: parsedBasedUrl.pathname,
   baseUrlSecure: parsedBasedUrl.protocol === 'https:',
+
+  serviceName: process.env.SERVICE_NAME || 'Projets',
 
   tokenExpiresIn: parseInt(process.env.TOKEN_EXPIRES_IN, 10) || 365,
 
@@ -191,15 +198,6 @@ module.exports.custom = {
   smtpTlsRejectUnauthorized: process.env.SMTP_TLS_REJECT_UNAUTHORIZED !== 'false',
 
   webhooks: JSON.parse(process.env.WEBHOOKS || '[]'), // TODO: validate structure
-
-  slackBotToken: process.env.SLACK_BOT_TOKEN,
-  slackChannelId: process.env.SLACK_CHANNEL_ID,
-
-  googleChatWebhookUrl: process.env.GOOGLE_CHAT_WEBHOOK_URL,
-
-  telegramBotToken: process.env.TELEGRAM_BOT_TOKEN,
-  telegramChatId: process.env.TELEGRAM_CHAT_ID,
-  telegramThreadId: process.env.TELEGRAM_THREAD_ID,
 
   templateBoards: TemplateBoardsSchema.parse(
     process.env.TEMPLATE_BOARDS ? JSON.parse(process.env.TEMPLATE_BOARDS) : [],

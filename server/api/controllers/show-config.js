@@ -32,14 +32,10 @@ module.exports = {
 
       oidc = {
         authorizationUrl: oidcClient.authorizationUrl(authorizationUrlParams),
-        // TODO: restore post_logout_redirect_uri once registered in ProConnect partner space
-        // endSessionUrl: oidcClient.issuer.end_session_endpoint
-        //   ? oidcClient.endSessionUrl({
-        //       post_logout_redirect_uri: sails.config.custom.oidcPostLogoutRedirectUri,
-        //     })
-        //   : null,
         endSessionUrl: oidcClient.issuer.end_session_endpoint
-          ? oidcClient.endSessionUrl()
+          ? oidcClient.endSessionUrl({
+              post_logout_redirect_uri: sails.config.custom.oidcPostLogoutRedirectUri,
+            })
           : null,
         isEnforced: sails.config.custom.oidcEnforced,
       };

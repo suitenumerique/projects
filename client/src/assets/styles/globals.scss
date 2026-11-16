@@ -2,6 +2,18 @@
 @use "@gouvfr-lasuite/ui-kit/style";
 @use "./cunningham-tokens.css";
 @use "./cunningham-tokens.scss" as *;
+@use "@fontsource-variable/hanken-grotesk";
+
+// The default/dark (non-dsfr/anct) themes reference "Hanken Grotesk" as their base font
+// (see cunningham-tokens.scss, sourced from @gouvfr-lasuite/ui-kit and regenerated via
+// `npm run cunningham:generate`, so not hand-edited here), but ship no actual font file for
+// it. @fontsource-variable/hanken-grotesk (imported above) self-hosts it, but registers the
+// font under the family name "Hanken Grotesk Variable", so the token's font-family variables
+// are overridden here to match.
+html[class*='cunningham-theme--']:not([class*='cunningham-theme--dsfr']):not([class*='cunningham-theme--anct']) {
+  --c--globals--font--families--base: 'Hanken Grotesk Variable', Inter, 'Roboto Flex Variable', sans-serif;
+  --c--globals--font--families--accent: 'Hanken Grotesk Variable', Inter, 'Roboto Flex Variable', sans-serif;
+}
 
 * {
   scrollbar-width: thin;

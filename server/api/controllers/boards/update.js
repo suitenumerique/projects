@@ -53,7 +53,17 @@ module.exports = {
     const hasPreferenceUpdates = !_.isUndefined(inputs.position) || !_.isUndefined(inputs.folderId);
 
     if (hasBoardUpdates) {
-      if (!isProjectManager) {
+      const boardMembership = await BoardMembership.findOne({
+        boardId: inputs.id,
+        userId: currentUser.id,
+      });
+
+      const isBoardEditorOrOwner =
+        boardMembership &&
+        (boardMembership.role === BoardMembership.Roles.EDITOR ||
+          boardMembership.role === BoardMembership.Roles.OWNER);
+
+      if (!isProjectManager && !isBoardEditorOrOwner) {
         throw Errors.BOARD_NOT_FOUND; // Forbidden
       }
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { ModalProvider } from '@gouvfr-lasuite/cunningham-react';
 import { CunninghamProvider } from '@gouvfr-lasuite/ui-kit';
@@ -17,7 +17,45 @@ import '../assets/styles/reset.scss';
 import '../assets/styles/globals.scss';
 
 function ThemedApp({ children }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colorScheme } = useTheme();
+  const colors = useSelector((state) => state.root?.config?.theme?.colors);
+  const fontFamily = useSelector((state) => state.root?.config?.theme?.fontFamily);
+  const favicon = useSelector((state) => state.root?.config?.theme?.favicon);
+
+  useEffect(() => {
+    Object.entries(colors ?? {}).forEach(([name, value]) => {
+      document.documentElement.style.setProperty(name, value);
+    });
+  }, [colors]);
+
+  useEffect(() => {
+    if (!fontFamily) {
+      return;
+    }
+
+    document.documentElement.style.setProperty('--c--globals--font--families--base', fontFamily);
+    document.documentElement.style.setProperty('--c--globals--font--families--accent', fontFamily);
+  }, [fontFamily]);
+
+  useEffect(() => {
+    if (!favicon) {
+      // No custom favicon configured: follow the app's resolved theme (like the logo),
+      // instead of the OS-level prefers-color-scheme media query.
+      const defaultSrc = `/oss/${colorScheme}/favicon.svg`;
+
+      document.querySelectorAll('link[rel="icon"]').forEach((link) => {
+        link.setAttribute('href', defaultSrc);
+      });
+      return;
+    }
+
+    const { src, darkSrc } = favicon;
+
+    document.querySelectorAll('link[rel="icon"]').forEach((link) => {
+      const isDark = link.getAttribute('media')?.includes('dark');
+      link.setAttribute('href', isDark && darkSrc ? darkSrc : src);
+    });
+  }, [favicon, colorScheme]);
 
   return (
     <CunninghamProvider currentLocale={i18n.resolvedLanguage} theme={resolvedTheme}>

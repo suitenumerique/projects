@@ -63,7 +63,9 @@
     margin: 1px 2px 0px 1px;
     max-width: 100%;
     overflow: hidden;
+    overflow-wrap: break-word;
     padding: 8px 12px;
+    word-break: break-all;
   }
 
 }

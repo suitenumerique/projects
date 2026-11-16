@@ -36,5 +36,10 @@ module.exports.views = {
    */
 
   layout: false,
-  locals: { BASE_URL: process.env.BASE_URL, THEME_PREFIX: process.env.THEME_PREFIX || '', DISABLE_DARK_MODE: process.env.DISABLE_DARK_MODE || '' },
+  locals: {
+    BASE_URL: process.env.BASE_URL,
+    THEME_PREFIX: process.env.THEME_PREFIX || '',
+    DISABLE_DARK_MODE: process.env.DISABLE_DARK_MODE || '',
+    SERVICE_NAME: process.env.SERVICE_NAME || 'Projets',
+  },
 };

@@ -12,7 +12,6 @@ const handleLocationChange = (
   cardLabels,
   tasks,
   attachments,
-  deletedNotifications,
 ) => ({
   type: ActionTypes.LOCATION_CHANGE_HANDLE,
   payload: {
@@ -27,7 +26,6 @@ const handleLocationChange = (
     cardLabels,
     tasks,
     attachments,
-    deletedNotifications,
   },
 });
 

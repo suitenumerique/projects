@@ -1,4 +1,3 @@
-import truncate from 'lodash/truncate';
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation, Trans } from 'react-i18next';
@@ -45,18 +44,21 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
             }}
           >
             <strong />
+            <strong />
+            <strong />
+            <strong />
           </Trans>
         );
       case ActivityTypes.ADD_MEMBER_TO_CARD:
         return (
           <Trans
-            i18nKey="common.userAssignedMemberToCard"
+            i18nKey="common.userAssignedYouToCard"
             values={{
               user: activity.user.name,
-              member: activity.data.member.name,
               card: card.name,
             }}
           >
+            <strong />
             <strong />
           </Trans>
         );
@@ -70,6 +72,7 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
             }}
           >
             <strong />
+            <strong />
           </Trans>
         );
       case ActivityTypes.CHANGE_DUE_DATE:
@@ -82,6 +85,7 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
             }}
           >
             <strong />
+            <strong />
           </Trans>
         );
       case ActivityTypes.ADD_ATTACHMENT:
@@ -93,6 +97,7 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
               card: card.name,
             }}
           >
+            <strong />
             <strong />
           </Trans>
         );

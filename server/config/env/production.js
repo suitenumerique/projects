@@ -25,6 +25,12 @@ const { customLogger } = require('../../utils/logger');
 
 const parsedBasedUrl = new URL(process.env.BASE_URL);
 
+// When `REDIS_URL` is set, sessions and socket.io broadcasts are shared through
+// Redis so the app can be scaled horizontally (run several instances/processes
+// behind a load balancer). When it is unset, the app keeps its default single
+// instance behaviour (in-memory session store, per-process socket broadcasts).
+const redisUrl = process.env.REDIS_URL;
+
 module.exports = {
   /**
    *
@@ -86,7 +92,7 @@ module.exports = {
      * If, in production, this app has access to physical-layer CASCADE
      * constraints (e.g. PostgreSQL or MySQL), then set those up in the
      * database and uncomment this to disable Waterline's `cascadeOnDestroy`
-     * polyfill.  (Otherwise, if you are using a databse like Mongo, you might
+     * polyfill.  (Otherwise, if you are using a database like Mongo, you might
      * choose to keep this enabled.)
      *
      */
@@ -168,8 +174,9 @@ module.exports = {
      *
      */
 
-    // adapter: '@sailshq/connect-redis',
-    // url: 'redis://user:password@localhost:6379/databasenumber',
+    // Enabled automatically when `REDIS_URL` is provided (see top of file), so
+    // that a cluster of instances shares the same session store.
+    ...(redisUrl ? { adapter: '@sailshq/connect-redis', url: redisUrl } : {}),
 
     /**
      *
@@ -236,8 +243,10 @@ module.exports = {
      *
      */
 
-    // adapter: '@sailshq/socket.io-redis',
-    // url: 'redis://user:password@bigsquid.redistogo.com:9562/databasenumber',
+    // Enabled automatically when `REDIS_URL` is provided (see top of file), so
+    // that broadcasts (`sails.sockets.broadcast`) reach clients connected to any
+    // instance, not just the one that emitted them.
+    ...(redisUrl ? { adapter: '@sailshq/socket.io-redis', url: redisUrl } : {}),
   },
 
   /**

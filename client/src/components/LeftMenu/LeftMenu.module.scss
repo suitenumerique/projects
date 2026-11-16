@@ -18,7 +18,8 @@
   }
 
   .addBoardButton {
-    flex: 1;
+    flex: 0 1 auto;
+    max-width: 100%;
     font-weight: 500;
     overflow: hidden;
 

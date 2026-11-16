@@ -67,4 +67,14 @@ module.exports = {
   log: {
     level: 'warn',
   },
+
+  /**
+   *
+   * Dummy secret so tests can sign JWTs without a local .env (e.g. in CI).
+   *
+   */
+
+  session: {
+    secret: process.env.SECRET_KEY || 'test-secret',
+  },
 };

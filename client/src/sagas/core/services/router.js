@@ -90,7 +90,6 @@ export function* handleLocationChange() {
   let cardLabels;
   let tasks;
   let attachments;
-  let deletedNotifications;
 
   switch (pathsMatch.pattern.path) {
     case Paths.BOARDS:
@@ -142,23 +141,6 @@ export function* handleLocationChange() {
         }
       }
 
-      if (pathsMatch.pattern.path === Paths.CARDS) {
-        const notificationIds = yield select(selectors.selectNotificationIdsForCurrentCard);
-
-        if (notificationIds && notificationIds.length > 0) {
-          try {
-            ({ items: deletedNotifications } = yield call(
-              request,
-              api.updateNotifications,
-              notificationIds,
-              {
-                isRead: true,
-              },
-            ));
-          } catch (error) {} // eslint-disable-line no-empty
-        }
-      }
-
       break;
     }
     default:
@@ -177,7 +159,6 @@ export function* handleLocationChange() {
       cardLabels,
       tasks,
       attachments,
-      deletedNotifications,
     ),
   );
 }

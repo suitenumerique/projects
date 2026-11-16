@@ -163,7 +163,7 @@ const LeftMenu = React.memo(
                 onFolderEdit={handleFolderEdit}
                 onFolderUpdate={onFolderUpdate}
                 onFolderDelete={onFolderDelete}
-                canEdit={canEditProject}
+                canEdit
               />
             )}
             {!isOrgMode && privateBoards.length === 0 && (
@@ -210,7 +210,7 @@ const LeftMenu = React.memo(
                 onFolderEdit={handleFolderEdit}
                 onFolderUpdate={onFolderUpdate}
                 onFolderDelete={onFolderDelete}
-                canEdit={canEditProject}
+                canEdit
               />
             )}
             {!isOrgMode && sharedBoards.length === 0 && (

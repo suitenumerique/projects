@@ -14,11 +14,13 @@ import { useTranslation } from 'react-i18next';
 import Feedback from '../Feedback';
 import { FeedbackWidget } from '../../ui/FeedbackWidget/index.tsx';
 import HeaderRightContainer from '../../containers/HeaderRightContainer';
+import { useTheme } from '../../hooks/use-theme';
 import styles from './Login.module.scss';
 
 import illustration from '../../assets/images/illustration.jpg';
-import { ReactComponent as Logo } from '../../assets/images/logo.svg';
 import Paths from '../../constants/Paths';
+
+const { THEME_PREFIX } = window;
 
 // const createMessage = (error) => {
 //   if (!error) {
@@ -76,6 +78,9 @@ import Paths from '../../constants/Paths';
 
 const Login = React.memo(({ theme, onAuthenticateUsingOidc }) => {
   const { t, i18n } = useTranslation();
+  const { colorScheme } = useTheme();
+
+  const isGovDeployment = THEME_PREFIX === 'dsfr';
 
   const localeTheme = useMemo(() => {
     const languageWithoutRegion = i18n.language.split(/[-_]/)[0];
@@ -117,7 +122,7 @@ const Login = React.memo(({ theme, onAuthenticateUsingOidc }) => {
                     {...localeTheme.header.logo}
                   />
                 ) : (
-                  <Logo />
+                  <img alt="" src={`/oss/${colorScheme}/logo.svg`} />
                 )}
               </div>
             </Link>
@@ -147,10 +152,12 @@ const Login = React.memo(({ theme, onAuthenticateUsingOidc }) => {
             }
           />
         </HomeGutter>
-        <Footer
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...localeTheme.footer}
-        />
+        {isGovDeployment && (
+          <Footer
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...localeTheme.footer}
+          />
+        )}
       </MainLayout>
     </div>
   );

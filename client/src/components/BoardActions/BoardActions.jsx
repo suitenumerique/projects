@@ -207,7 +207,7 @@ const BoardActions = React.memo(
                 (boardMembership) => boardMembership.userId === currentUser.id,
               ) ? (
                 <Button
-                  title="Share board"
+                  title={t('action.share')}
                   color="neutral"
                   variant="tertiary"
                   size="small"

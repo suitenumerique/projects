@@ -3,6 +3,7 @@ export default {
     common: {
       emailOrUsername: 'E-mail of gebruikersnaam',
       invalidEmailOrUsername: 'Ongeldig e-mailadres of gebruikersnaam',
+      invalidCredentials: 'Ongeldige inloggegevens',
       invalidPassword: 'Ongeldig wachtwoord',
       noInternetConnection: 'Geen internetverbinding',
       pageNotFound_title: 'Pagina niet gevonden',

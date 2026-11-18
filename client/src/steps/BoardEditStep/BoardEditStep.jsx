@@ -52,7 +52,7 @@ const BoardEditStep = React.memo(({ defaultData, onUpdate, onBack, onClose }) =>
         <Input
           ref={nameField}
           name="name"
-          label="Nom du tableau"
+          label={t('common.boardName')}
           value={data.name}
           onChange={handleFieldChange}
           className={styles.createInput}

@@ -9,6 +9,7 @@ import {
   HomeGutter,
   Footer,
 } from '@gouvfr-lasuite/ui-kit';
+import { Button } from '@gouvfr-lasuite/cunningham-react';
 import { useTranslation } from 'react-i18next';
 
 import Feedback from '../Feedback';
@@ -81,6 +82,9 @@ const Login = React.memo(({ theme, onAuthenticateUsingOidc }) => {
   const { colorScheme } = useTheme();
 
   const isGovDeployment = THEME_PREFIX === 'dsfr';
+  // Government themes (dsfr/dinum, anct) keep the ProConnect branding; the
+  // default theme uses a neutral SSO login button instead.
+  const isGovTheme = THEME_PREFIX === 'dsfr' || THEME_PREFIX === 'anct';
 
   const localeTheme = useMemo(() => {
     const languageWithoutRegion = i18n.language.split(/[-_]/)[0];
@@ -146,7 +150,13 @@ const Login = React.memo(({ theme, onAuthenticateUsingOidc }) => {
             mainButton={
               <div className="c__hero__buttons">
                 <div>
-                  <ProConnectButton onClick={onAuthenticateUsingOidc} />
+                  {isGovTheme ? (
+                    <ProConnectButton onClick={onAuthenticateUsingOidc} />
+                  ) : (
+                    <Button color="brand" size="medium" onClick={onAuthenticateUsingOidc}>
+                      {t('action.logInWithSSO')}
+                    </Button>
+                  )}
                 </div>
               </div>
             }

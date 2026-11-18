@@ -9,7 +9,7 @@ module.exports.up = (knex) =>
     table.text('token_hash').notNullable();
     table.text('token_prefix').notNullable();
     table.timestamp('last_used_at', true);
-    table.timestamp('expires_at', true);
+    table.timestamp('expires_at', true).notNullable();
 
     table.timestamp('created_at', true);
     table.timestamp('updated_at', true);

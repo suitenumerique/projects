@@ -29,6 +29,7 @@ module.exports = {
     },
     expiresAt: {
       type: 'ref',
+      required: true,
       columnName: 'expires_at',
     },
 

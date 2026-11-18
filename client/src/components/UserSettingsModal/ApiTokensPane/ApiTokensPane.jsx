@@ -8,19 +8,9 @@ import selectors from '../../../selectors';
 
 import styles from './ApiTokensPane.module.scss';
 
-const EXPIRATION_OPTIONS = ['30', '90', '365', 'never'];
+// Must match the lifetimes accepted by the server.
+const EXPIRATION_OPTIONS = ['30', '90'];
 const DEFAULT_EXPIRATION = '90';
-
-const computeExpiresAt = (expiration) => {
-  if (expiration === 'never') {
-    return null;
-  }
-
-  const date = new Date();
-  date.setDate(date.getDate() + parseInt(expiration, 10));
-
-  return date.toISOString();
-};
 
 // Each user has at most one API token, and must revoke it to generate a new one.
 // Three states: no token (generate form), token just generated (clear value with
@@ -73,7 +63,7 @@ const ApiTokensPane = React.memo(() => {
 
       try {
         const { item, included } = await api.createApiToken(
-          { expiresAt: computeExpiresAt(expiration) },
+          { expiresInDays: parseInt(expiration, 10) },
           headers,
         );
 
@@ -129,9 +119,7 @@ const ApiTokensPane = React.memo(() => {
           <div>
             <code className={styles.itemName}>{apiToken.tokenPrefix}…</code>
             {' · '}
-            {apiToken.expiresAt
-              ? t('common.apiTokenExpiresOn', { date: formatDate(apiToken.expiresAt) })
-              : t('common.apiTokenNeverExpires')}
+            {t('common.apiTokenExpiresOn', { date: formatDate(apiToken.expiresAt) })}
           </div>
           <div className={styles.itemMeta}>
             {apiToken.lastUsedAt
@@ -151,10 +139,7 @@ const ApiTokensPane = React.memo(() => {
           label={t('common.apiTokenExpiration')}
           options={EXPIRATION_OPTIONS.map((value) => ({
             value,
-            label:
-              value === 'never'
-                ? t('common.apiTokenNeverExpires')
-                : t('common.apiTokenExpiresInDays', { count: parseInt(value, 10) }),
+            label: t('common.apiTokenExpiresInDays', { count: parseInt(value, 10) }),
           }))}
           value={expiration}
           clearable={false}

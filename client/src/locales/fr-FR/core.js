@@ -21,7 +21,6 @@ export default {
       apiTokenExpiration: 'Expiration',
       apiTokenExpiresInDays_one: 'Dans {{count}} jour',
       apiTokenExpiresInDays_other: 'Dans {{count}} jours',
-      apiTokenNeverExpires: 'N’expire jamais',
       apiTokenExpiresOn: 'Expire le {{date}}',
       apiTokenLastUsedOn: 'Utilisé le {{date}}',
       apiTokenNeverUsed: 'Jamais utilisé',

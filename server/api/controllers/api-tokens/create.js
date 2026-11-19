@@ -1,10 +1,11 @@
 // Generates the user's API token. Each user has at most one: it must be revoked
 // before a new one can be generated.
 
+// Tokens always expire: only these lifetimes (in days) can be chosen.
+const EXPIRATION_DAYS = [30, 90];
+const DEFAULT_EXPIRATION_DAYS = 90;
+
 const Errors = {
-  INVALID_EXPIRATION_DATE: {
-    invalidExpirationDate: 'Invalid expiration date',
-  },
   API_TOKEN_ALREADY_EXISTS: {
     apiTokenAlreadyExists: 'API token already exists, revoke it to generate a new one',
   },
@@ -12,16 +13,14 @@ const Errors = {
 
 module.exports = {
   inputs: {
-    expiresAt: {
-      type: 'string',
-      allowNull: true,
+    expiresInDays: {
+      type: 'number',
+      isIn: EXPIRATION_DAYS,
+      defaultsTo: DEFAULT_EXPIRATION_DAYS,
     },
   },
 
   exits: {
-    invalidExpirationDate: {
-      responseType: 'unprocessableEntity',
-    },
     apiTokenAlreadyExists: {
       responseType: 'conflict',
     },
@@ -30,17 +29,6 @@ module.exports = {
   async fn(inputs) {
     const { currentUser } = this.req;
 
-    let expiresAt = null;
-    if (inputs.expiresAt) {
-      const date = new Date(inputs.expiresAt);
-
-      if (Number.isNaN(date.getTime()) || date <= new Date()) {
-        throw Errors.INVALID_EXPIRATION_DATE;
-      }
-
-      expiresAt = date.toISOString();
-    }
-
     const count = await ApiToken.count({
       userId: currentUser.id,
     });
@@ -48,6 +36,10 @@ module.exports = {
     if (count > 0) {
       throw Errors.API_TOKEN_ALREADY_EXISTS;
     }
+
+    const expiresAt = new Date(
+      Date.now() + inputs.expiresInDays * 24 * 60 * 60 * 1000,
+    ).toISOString();
 
     const { token, tokenHash, tokenPrefix } = sails.helpers.apiTokens.generate();
 

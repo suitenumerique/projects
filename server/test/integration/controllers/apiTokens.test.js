@@ -136,11 +136,28 @@ describe('api-tokens', () => {
     expect((await request('POST', '/api/api-tokens', sessionToken)).status).to.equal(200);
   });
 
-  it('refuses a past expiration date', async () => {
-    const response = await request('POST', '/api/api-tokens', sessionToken, {
-      expiresAt: '2000-01-01T00:00:00.000Z',
-    });
-    expect(response.status).to.equal(422);
+  it('only accepts a 30 or 90 day expiration, 90 by default', async () => {
+    const DAY = 24 * 60 * 60 * 1000;
+    const expectExpiresIn = (item, days) =>
+      expect(new Date(item.expiresAt).getTime() - Date.now()).to.be.closeTo(days * DAY, 60 * 1000);
+
+    const invalidStatuses = await Promise.all(
+      [0, 1, 365, null, 'never'].map(async (expiresInDays) => {
+        const response = await request('POST', '/api/api-tokens', sessionToken, { expiresInDays });
+        return response.status;
+      }),
+    );
+    expect(invalidStatuses).to.deep.equal([400, 400, 400, 400, 400]);
+    expect(await ApiToken.count({ userId: USER_ID })).to.equal(0);
+
+    const byDefault = await (await request('POST', '/api/api-tokens', sessionToken)).json();
+    expectExpiresIn(byDefault.item, 90);
+    await ApiToken.destroy({ userId: USER_ID });
+
+    const short = await (
+      await request('POST', '/api/api-tokens', sessionToken, { expiresInDays: 30 })
+    ).json();
+    expectExpiresIn(short.item, 30);
   });
 
   it('does not let an API token manage credentials', async () => {

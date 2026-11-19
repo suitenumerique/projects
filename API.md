@@ -5,7 +5,7 @@ To call it from a script or a third-party tool, use a **personal API token**.
 
 ## Getting a token
 
-In the app: **User profile → API token**, choose an expiration, then click **Generate token**.
+In the app: **User profile → API token**, choose an expiration (30 or 90 days), then click **Generate token**.
 The token (`prj_…`) is shown **only once**: copy it right away. Only its hash is stored.
 
 A token:

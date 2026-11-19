@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Input, Select, Switch } from '@gouvfr-lasuite/cunningham-react';
+import { Input, Select } from '@gouvfr-lasuite/cunningham-react';
 import { HorizontalSeparator } from '@gouvfr-lasuite/ui-kit';
 
 import { useTheme } from '../../../hooks/use-theme';
 import locales from '../../../locales';
+import NotificationsSection from '../NotificationsSection';
 
 import styles from './AccountPane.module.scss';
 
@@ -17,6 +18,8 @@ const AccountPane = React.memo(
     organization,
     language,
     subscribeToOwnCards,
+    notifyMentionsByEmail,
+    notifySubscribedCardsByEmail,
     defaultLanguage,
     supportedLanguages,
     onUpdate,
@@ -28,12 +31,6 @@ const AccountPane = React.memo(
     const filteredLocales = supportedLanguages
       ? locales.filter((locale) => supportedLanguages.includes(locale.language))
       : locales;
-
-    const handleSubscribeToOwnCardsChange = useCallback(() => {
-      onUpdate({
-        subscribeToOwnCards: !subscribeToOwnCards,
-      });
-    }, [subscribeToOwnCards, onUpdate]);
 
     const handleLanguageChange = useCallback(
       (localeValue) => {
@@ -61,10 +58,11 @@ const AccountPane = React.memo(
           )}
         </div>
         <HorizontalSeparator />
-        <Switch
-          label={t('common.subscribeToMyOwnCardsByDefault')}
-          checked={subscribeToOwnCards}
-          onChange={handleSubscribeToOwnCardsChange}
+        <NotificationsSection
+          subscribeToOwnCards={subscribeToOwnCards}
+          notifyMentionsByEmail={notifyMentionsByEmail}
+          notifySubscribedCardsByEmail={notifySubscribedCardsByEmail}
+          onUpdate={onUpdate}
         />
         <HorizontalSeparator />
         <div className={styles.preferences}>
@@ -127,6 +125,8 @@ AccountPane.propTypes = {
   organization: PropTypes.string,
   language: PropTypes.string,
   subscribeToOwnCards: PropTypes.bool.isRequired,
+  notifyMentionsByEmail: PropTypes.bool.isRequired,
+  notifySubscribedCardsByEmail: PropTypes.bool.isRequired,
   defaultLanguage: PropTypes.string,
   supportedLanguages: PropTypes.arrayOf(PropTypes.string),
   onUpdate: PropTypes.func.isRequired,

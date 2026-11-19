@@ -16,7 +16,16 @@ const valuesValidator = (value) => {
 
 const cardUrl = (card) => `${process.env.BASE_URL}/cards/${card.id}`;
 
-const buildAndSendEmail = async (board, card, action, actorUser, notifiableUser) => {
+// The notification center always gets every notification, but emails follow the
+// user's preferences: mentions on one side, activity on subscribed cards on the other.
+const buildAndSendEmail = async (
+  board,
+  card,
+  action,
+  actorUser,
+  notifiableUser,
+  isCardSubscriber,
+) => {
   let subject;
   let heading;
   let body;
@@ -26,10 +35,12 @@ const buildAndSendEmail = async (board, card, action, actorUser, notifiableUser)
   const boardName = `<strong>${board.name}</strong>`;
 
   switch (action.type) {
-    case Action.Types.COMMENT_CARD:
-      if (
-        sails.helpers.comments.parseMentionedUserIds(action.data.text).includes(notifiableUser.id)
-      ) {
+    case Action.Types.COMMENT_CARD: {
+      const isMentioned = sails.helpers.comments
+        .parseMentionedUserIds(action.data.text)
+        .includes(notifiableUser.id);
+
+      if (isMentioned && notifiableUser.notifyMentionsByEmail) {
         subject = `Vous avez été mentionné : ${card.name}`;
         heading = 'Vous avez été mentionné !';
         body =
@@ -37,17 +48,23 @@ const buildAndSendEmail = async (board, card, action, actorUser, notifiableUser)
           `dans le tableau ${boardName} :</p>` +
           `<blockquote style="margin: 16px 0; padding: 8px 16px; border-left: 3px solid #dddddd; color: #3a3a3a;">` +
           `${sails.helpers.comments.formatText(action.data.text)}</blockquote>`;
-      } else {
+      } else if (isCardSubscriber && notifiableUser.notifySubscribedCardsByEmail) {
         subject = `Nouveau commentaire : ${card.name}`;
         heading = 'Nouveau commentaire !';
         body =
           `<p>${actorName} a ajouté un commentaire dans la carte suivante : ${cardName} ` +
           `dans le tableau ${boardName}</p>`;
+      } else {
+        return;
       }
 
       break;
+    }
     case Action.Types.ADD_MEMBER_TO_CARD:
-      if (notifiableUser.id !== action.data.member.id) {
+      if (
+        notifiableUser.id !== action.data.member.id ||
+        !notifiableUser.notifySubscribedCardsByEmail
+      ) {
         return;
       }
 
@@ -101,6 +118,12 @@ module.exports = {
       type: 'ref',
       required: true,
     },
+    // Whether the user is notified as a subscriber of the card, rather than only
+    // because they are mentioned in a comment.
+    isCardSubscriber: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
 
   async fn(inputs) {
@@ -128,7 +151,14 @@ module.exports = {
         notifiableUser = await sails.helpers.users.getOne(notification.userId);
       }
 
-      buildAndSendEmail(inputs.board, inputs.card, values.action, inputs.actorUser, notifiableUser);
+      buildAndSendEmail(
+        inputs.board,
+        inputs.card,
+        values.action,
+        inputs.actorUser,
+        notifiableUser,
+        inputs.isCardSubscriber,
+      );
     }
 
     sails.helpers.utils.sendWebhooks.with({

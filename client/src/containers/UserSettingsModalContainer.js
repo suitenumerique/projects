@@ -6,8 +6,17 @@ import entryActions from '../entry-actions';
 import UserSettingsModal from '../components/UserSettingsModal';
 
 const mapStateToProps = (state) => {
-  const { email, name, avatarUrl, phone, organization, language, subscribeToOwnCards } =
-    selectors.selectCurrentUser(state);
+  const {
+    email,
+    name,
+    avatarUrl,
+    phone,
+    organization,
+    language,
+    subscribeToOwnCards,
+    notifyMentionsByEmail,
+    notifySubscribedCardsByEmail,
+  } = selectors.selectCurrentUser(state);
 
   const { defaultLanguage, supportedLanguages } = selectors.selectConfig(state);
 
@@ -19,6 +28,8 @@ const mapStateToProps = (state) => {
     organization,
     language,
     subscribeToOwnCards,
+    notifyMentionsByEmail,
+    notifySubscribedCardsByEmail,
     defaultLanguage,
     supportedLanguages,
   };

@@ -103,6 +103,16 @@ module.exports = {
       defaultsTo: false,
       columnName: 'subscribe_to_own_cards',
     },
+    notifyMentionsByEmail: {
+      type: 'boolean',
+      defaultsTo: true,
+      columnName: 'notify_mentions_by_email',
+    },
+    notifySubscribedCardsByEmail: {
+      type: 'boolean',
+      defaultsTo: true,
+      columnName: 'notify_subscribed_cards_by_email',
+    },
     deletedAt: {
       type: 'ref',
       columnName: 'deleted_at',

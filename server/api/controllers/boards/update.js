@@ -17,6 +17,9 @@ module.exports = {
     folderId: {
       type: 'json',
     },
+    isFavorite: {
+      type: 'boolean',
+    },
     name: {
       type: 'string',
       isNotEmptyString: true,
@@ -50,7 +53,11 @@ module.exports = {
 
     const boardValues = _.pick(inputs, ['name', 'isPublic']);
     const hasBoardUpdates = Object.keys(boardValues).length > 0;
-    const hasPreferenceUpdates = !_.isUndefined(inputs.position) || !_.isUndefined(inputs.folderId);
+    const preferenceValues = _.omitBy(
+      _.pick(inputs, ['position', 'folderId', 'isFavorite']),
+      _.isUndefined,
+    );
+    const hasPreferenceUpdates = Object.keys(preferenceValues).length > 0;
 
     if (hasBoardUpdates) {
       const boardMembership = await BoardMembership.findOne({
@@ -83,10 +90,6 @@ module.exports = {
     let userBoardPreferences = [];
 
     if (hasPreferenceUpdates) {
-      const preferenceValues = {};
-      if (!_.isUndefined(inputs.position)) preferenceValues.position = inputs.position;
-      if (!_.isUndefined(inputs.folderId)) preferenceValues.folderId = inputs.folderId;
-
       const preference = await sails.helpers.userBoardPreferences.upsertOne.with({
         userId: currentUser.id,
         boardId: inputs.id,

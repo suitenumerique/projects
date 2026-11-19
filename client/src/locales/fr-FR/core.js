@@ -105,6 +105,7 @@ export default {
       enterFilename: 'Saisir le nom du fichier',
       enterListTitle: 'Saisie le titre de la liste...',
       enterTaskDescription: 'Saisir la description de la tâche...',
+      favorites: 'Favoris',
       feedbackIntroduction:
         "Projets est en constante évolution, et votre avis compte ! N'hésitez pas à nous partager votre retour :",
       filterByLabels_title: 'Filtrer par étiquettes',
@@ -224,6 +225,7 @@ export default {
       addMoreDetailedDescription: 'Ajouter une description plus détaillée',
       addTask: 'Ajouter une tâche',
       addToCard: 'Ajouter à la carte',
+      addToFavorites: 'Ajouter aux favoris',
       addUser: 'Ajouter un utilisateur',
       copyLink_title: 'Copier le lien de la tâche',
       create: 'Créer',
@@ -290,6 +292,7 @@ export default {
       removeBackground: "Supprimer l'arrière-plan",
       removeCover_title: 'Supprimer la couverture',
       removeFromBoard: 'Supprimer le tableau',
+      removeFromFavorites: 'Retirer des favoris',
       removeFromProject: 'Supprimer du projet',
       removeManager: 'Supprimer le gestionnaire du projet',
       removeMember: 'Supprimer le membre',

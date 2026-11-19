@@ -15,7 +15,18 @@ const StepTypes = {
 };
 
 const BoardActionsStep = React.memo(
-  ({ defaultData, canDelete, canLeave, onUpdate, onDelete, onLeave, onExportCsv, onClose }) => {
+  ({
+    defaultData,
+    canDelete,
+    canLeave,
+    isFavorite,
+    onUpdate,
+    onDelete,
+    onLeave,
+    onFavoriteToggle,
+    onExportCsv,
+    onClose,
+  }) => {
     const { t } = useTranslation();
 
     const [step, openStep, handleBack] = useSteps();
@@ -23,6 +34,11 @@ const BoardActionsStep = React.memo(
     const handleEditNameClick = useCallback(() => {
       openStep(StepTypes.EDIT_NAME);
     }, [openStep]);
+
+    const handleFavoriteClick = useCallback(() => {
+      onFavoriteToggle();
+      onClose();
+    }, [onFavoriteToggle, onClose]);
 
     const handleExportCsvClick = useCallback(() => {
       onExportCsv();
@@ -77,6 +93,15 @@ const BoardActionsStep = React.memo(
 
     return (
       <Menu>
+        {onFavoriteToggle && (
+          <MenuItem
+            icon={isFavorite ? 'star' : 'star_border'}
+            isIconActive={isFavorite}
+            onClick={handleFavoriteClick}
+          >
+            {isFavorite ? t('action.removeFromFavorites') : t('action.addToFavorites')}
+          </MenuItem>
+        )}
         {canDelete && (
           <MenuItem icon="edit" onClick={handleEditNameClick}>
             {t('action.rename')}
@@ -106,14 +131,18 @@ BoardActionsStep.propTypes = {
   defaultData: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   canDelete: PropTypes.bool.isRequired,
   canLeave: PropTypes.bool.isRequired,
+  isFavorite: PropTypes.bool,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onLeave: PropTypes.func.isRequired,
+  onFavoriteToggle: PropTypes.func,
   onExportCsv: PropTypes.func,
   onClose: PropTypes.func.isRequired,
 };
 
 BoardActionsStep.defaultProps = {
+  isFavorite: false,
+  onFavoriteToggle: undefined,
   onExportCsv: undefined,
 };
 

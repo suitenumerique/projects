@@ -140,16 +140,16 @@ export function* fetchBoard(id) {
 
 export function* updateBoard(id, data) {
   // Separate board properties from user preference properties
-  // Position and folderId are now user-specific preferences, not board properties
-  const { position, folderId, ...boardData } = data;
+  // Position, folderId and isFavorite are user-specific preferences, not board properties
+  const { position, folderId, isFavorite, ...boardData } = data;
 
-  // Only optimistically update board properties (not position/folderId)
+  // Only optimistically update board properties (not user preferences)
   if (Object.keys(boardData).length > 0) {
     yield put(actions.updateBoard(id, boardData));
   }
 
-  // Optimistically update user board preference if position or folderId changed
-  if (position !== undefined || folderId !== undefined) {
+  // Optimistically update the user board preference
+  if (position !== undefined || folderId !== undefined || isFavorite !== undefined) {
     const currentUserId = yield select(selectors.selectCurrentUserId);
     const existingPreference = yield select(selectors.selectUserBoardPreference, id);
 
@@ -161,6 +161,7 @@ export function* updateBoard(id, data) {
         boardId: id,
         ...(position !== undefined && { position }),
         ...(folderId !== undefined && { folderId }),
+        ...(isFavorite !== undefined && { isFavorite }),
       };
 
       // Use update handle since the reducer handles both create and update via upsert

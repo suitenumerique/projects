@@ -15,6 +15,11 @@ module.exports = {
       type: 'number',
       required: true,
     },
+    isFavorite: {
+      type: 'boolean',
+      defaultsTo: false,
+      columnName: 'is_favorite',
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

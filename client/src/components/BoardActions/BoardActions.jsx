@@ -29,6 +29,7 @@ const BoardActions = React.memo(
     canEdit,
     canEditMemberships,
     isBoardPublic,
+    isFavorite,
     searchedUsers,
     isSearchingUsers,
     cards,
@@ -61,6 +62,10 @@ const BoardActions = React.memo(
       },
       [onBoardUpdate, currentBoardId],
     );
+
+    const handleFavoriteToggle = useCallback(() => {
+      onBoardUpdate(currentBoardId, { isFavorite: !isFavorite });
+    }, [onBoardUpdate, currentBoardId, isFavorite]);
 
     const handleShareClick = useCallback(() => {
       setIsShareModalOpen(true);
@@ -176,7 +181,26 @@ const BoardActions = React.memo(
 
     return (
       <div className={styles.wrapper}>
-        <h4 className={styles.boardName}>{currentBoardName}</h4>
+        <div className={styles.boardTitle}>
+          <h4 className={styles.boardName}>{currentBoardName}</h4>
+          <Button
+            color="neutral"
+            variant="tertiary"
+            size="small"
+            aria-label={isFavorite ? t('action.removeFromFavorites') : t('action.addToFavorites')}
+            title={isFavorite ? t('action.removeFromFavorites') : t('action.addToFavorites')}
+            aria-pressed={isFavorite}
+            className={isFavorite ? styles.favoriteButtonActive : undefined}
+            icon={
+              <Icon
+                name={isFavorite ? 'star' : 'star_border'}
+                type={isFavorite ? 'filled' : 'outlined'}
+                size="small"
+              />
+            }
+            onClick={handleFavoriteToggle}
+          />
+        </div>
         <div className={styles.actions}>
           <div className={styles.action}>
             <Filters
@@ -233,6 +257,8 @@ const BoardActions = React.memo(
               onUpdate={() => {}}
               onDelete={() => {}}
               onLeave={() => {}}
+              isFavorite={isFavorite}
+              onFavoriteToggle={handleFavoriteToggle}
               onExportCsv={handleExportCsv}
             >
               <Button
@@ -379,6 +405,7 @@ BoardActions.propTypes = {
   cards: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   lists: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   isBoardPublic: PropTypes.bool.isRequired,
+  isFavorite: PropTypes.bool.isRequired,
   onTextFilterUpdate: PropTypes.func.isRequired,
   onUserToFilterAdd: PropTypes.func.isRequired,
   onUserFromFilterRemove: PropTypes.func.isRequired,

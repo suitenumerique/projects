@@ -27,6 +27,9 @@ const mapStateToProps = (state) => {
 
   const isCurrentUserManager = selectors.selectIsCurrentUserManagerForCurrentProject(state);
   const currentUserMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
+  const preference = currentBoardId
+    ? selectors.selectUserBoardPreference(state, currentBoardId)
+    : null;
 
   const isCurrentUserMember = !!currentUserMembership;
   const isCurrentUserEditor =
@@ -49,6 +52,7 @@ const mapStateToProps = (state) => {
     canEditMemberships: isCurrentUserEditor || isCurrentUserManager,
     canSeeMemberships: isCurrentUserMember || isCurrentUserManager,
     isBoardPublic: currentBoard ? currentBoard.isPublic : false,
+    isFavorite: !!preference && !!preference.isFavorite,
     searchedUsers,
     isSearchingUsers,
     cards,

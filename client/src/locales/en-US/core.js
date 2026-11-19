@@ -100,6 +100,7 @@ export default {
       enterFilename: 'Enter filename',
       enterListTitle: 'Enter list title...',
       enterTaskDescription: 'Enter task description...',
+      favorites: 'Favorites',
       feedbackIntroduction:
         'Projects is under active development and your feedback matters! Do not hesitate to share your thoughts with us:',
       filterByLabels_title: 'Filter By Labels',
@@ -219,6 +220,7 @@ export default {
       addMoreDetailedDescription: 'Add more detailed description',
       addTask: 'Add task',
       addToCard: 'Add to card',
+      addToFavorites: 'Add to favorites',
       addUser: 'Add user',
       copyLink_title: 'Copy task link',
       create: 'Create',
@@ -287,6 +289,7 @@ export default {
       removeColor: 'Remove color',
       removeCover_title: 'Remove Cover',
       removeFromBoard: 'Remove from board',
+      removeFromFavorites: 'Remove from favorites',
       removeFromProject: 'Remove from project',
       removeManager: 'Remove manager',
       removeMember: 'Remove member',

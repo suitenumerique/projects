@@ -22,6 +22,7 @@ const makeMapStateToProps = () => {
       (currentUserMembership.role === BoardMembershipRoles.EDITOR || isOwner);
     const ownerCount = selectOwnerCountForBoard(state, id);
     const canLeave = !!currentUserMembership && (!isOwner || ownerCount > 1);
+    const preference = selectors.selectUserBoardPreference(state, id);
 
     return {
       id,
@@ -29,6 +30,7 @@ const makeMapStateToProps = () => {
       canEdit: isCurrentUserEditor,
       canDelete: isOwner,
       canLeave,
+      isFavorite: !!preference && !!preference.isFavorite,
       currentUserMembershipId: currentUserMembership ? currentUserMembership.id : null,
     };
   };

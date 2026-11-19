@@ -114,6 +114,7 @@ module.exports = {
             list: inputs.list,
             card: values.card,
             actorUser: values.user,
+            isCardSubscriber: subscriptionUserIds.includes(userId),
           }),
         ),
       );

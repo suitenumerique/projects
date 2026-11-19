@@ -56,6 +56,12 @@ module.exports = {
     subscribeToOwnCards: {
       type: 'boolean',
     },
+    notifyMentionsByEmail: {
+      type: 'boolean',
+    },
+    notifySubscribedCardsByEmail: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -86,6 +92,8 @@ module.exports = {
       'organization',
       'language',
       'subscribeToOwnCards',
+      'notifyMentionsByEmail',
+      'notifySubscribedCardsByEmail',
     ]);
 
     const user = await sails.helpers.users.createOne

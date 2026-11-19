@@ -42,6 +42,12 @@ module.exports = {
     subscribeToOwnCards: {
       type: 'boolean',
     },
+    notifyMentionsByEmail: {
+      type: 'boolean',
+    },
+    notifySubscribedCardsByEmail: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -86,6 +92,8 @@ module.exports = {
         'phone',
         'language',
         'subscribeToOwnCards',
+        'notifyMentionsByEmail',
+        'notifySubscribedCardsByEmail',
         // // Since forcing OIDC we want to avoid the possibility of stealing identity
         // 'name',
         // 'organization',

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '@gouvfr-lasuite/cunningham-react';
+import { Modal, ModalSize } from '@gouvfr-lasuite/cunningham-react';
 
 import AccountPane from './AccountPane';
 import User from '../../ui/User';
@@ -17,6 +17,8 @@ const UserSettingsModal = React.memo(
     organization,
     language,
     subscribeToOwnCards,
+    notifyMentionsByEmail,
+    notifySubscribedCardsByEmail,
     defaultLanguage,
     supportedLanguages,
     onUpdate,
@@ -27,6 +29,7 @@ const UserSettingsModal = React.memo(
 
     return (
       <Modal
+        size={ModalSize.MEDIUM}
         isOpen
         title={
           <div className={styles.modalTitle}>
@@ -45,6 +48,8 @@ const UserSettingsModal = React.memo(
           organization={organization}
           language={language}
           subscribeToOwnCards={subscribeToOwnCards}
+          notifyMentionsByEmail={notifyMentionsByEmail}
+          notifySubscribedCardsByEmail={notifySubscribedCardsByEmail}
           defaultLanguage={defaultLanguage}
           supportedLanguages={supportedLanguages}
           onUpdate={onUpdate}
@@ -63,6 +68,8 @@ UserSettingsModal.propTypes = {
   organization: PropTypes.string,
   language: PropTypes.string,
   subscribeToOwnCards: PropTypes.bool.isRequired,
+  notifyMentionsByEmail: PropTypes.bool.isRequired,
+  notifySubscribedCardsByEmail: PropTypes.bool.isRequired,
   defaultLanguage: PropTypes.string,
   supportedLanguages: PropTypes.arrayOf(PropTypes.string),
   onUpdate: PropTypes.func.isRequired,

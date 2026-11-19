@@ -250,9 +250,22 @@ describe('comment mentions', () => {
       });
     });
 
-    afterEach(() => {
+    // Emails that should not be sent: give them time to (wrongly) go out.
+    const waitForStrayEmails = () =>
+      new Promise((resolve) => {
+        setTimeout(resolve, 200);
+      });
+
+    const setPreferences = (userId, values) => User.updateOne({ id: userId }).set(values);
+
+    afterEach(async () => {
       smtp.isActive = originalIsActive;
       smtp.getTransporter = originalGetTransporter;
+
+      await User.update({ id: USER_IDS }).set({
+        notifyMentionsByEmail: true,
+        notifySubscribedCardsByEmail: true,
+      });
     });
 
     it('sends a mention email quoting the escaped comment, and a plain one to subscribers', async () => {
@@ -269,6 +282,53 @@ describe('comment mentions', () => {
       expect(mentionEmail.html).to.not.include(`(${MEMBER_ID})`);
 
       expect(emailTo(SUBSCRIBER_ID).subject).to.equal('Nouveau commentaire : Card');
+    });
+
+    it('skips mention emails for users who turned them off, keeping subscriber emails', async () => {
+      await setPreferences(MEMBER_ID, { notifyMentionsByEmail: false });
+      await setPreferences(SUBSCRIBER_ID, { notifyMentionsByEmail: false });
+
+      const comment = await createComment(`${mention(MEMBER_ID)} ${mention(SUBSCRIBER_ID)}`);
+
+      await waitForEmails(1);
+      await waitForStrayEmails();
+
+      // A mentioned subscriber still gets the subscribed cards email.
+      expect(sentEmails).to.have.lengthOf(1);
+      expect(emailTo(SUBSCRIBER_ID).subject).to.equal('Nouveau commentaire : Card');
+
+      // The notification center is always notified.
+      expect(await notifiedUserIds(comment.id)).to.deep.equal([MEMBER_ID, SUBSCRIBER_ID]);
+    });
+
+    it('skips subscribed cards emails for users who turned them off', async () => {
+      await setPreferences(SUBSCRIBER_ID, { notifySubscribedCardsByEmail: false });
+
+      const comment = await createComment(`Hello ${mention(MEMBER_ID)}`);
+
+      await waitForEmails(1);
+      await waitForStrayEmails();
+
+      expect(sentEmails).to.have.lengthOf(1);
+      expect(emailTo(MEMBER_ID).subject).to.equal('Vous avez été mentionné : Card');
+
+      expect(await notifiedUserIds(comment.id)).to.deep.equal([MEMBER_ID, SUBSCRIBER_ID]);
+    });
+
+    it('does not email a mention added on edit to a user who turned mention emails off', async () => {
+      await setPreferences(SUBSCRIBER_ID, { notifyMentionsByEmail: false });
+
+      const comment = await createComment('First version');
+      await waitForEmails(1);
+      sentEmails = [];
+
+      await updateComment(comment.id, `Edited ${mention(SUBSCRIBER_ID)} ${mention(MEMBER_ID)}`);
+
+      await waitForEmails(1);
+      await waitForStrayEmails();
+
+      expect(sentEmails).to.have.lengthOf(1);
+      expect(emailTo(MEMBER_ID).subject).to.equal('Vous avez été mentionné : Card');
     });
   });
 });

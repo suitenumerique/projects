@@ -43,6 +43,8 @@ export default class extends BaseModel {
     organization: attr(),
     language: attr(),
     subscribeToOwnCards: attr(),
+    notifyMentionsByEmail: attr(),
+    notifySubscribedCardsByEmail: attr(),
     isAdmin: attr(),
     isLocked: attr(),
     isRoleLocked: attr(),

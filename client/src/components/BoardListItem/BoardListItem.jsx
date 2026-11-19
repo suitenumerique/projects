@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import pick from 'lodash/pick';
 import { Icon } from '@gouvfr-lasuite/ui-kit';
 import classNames from 'classnames';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styles from './BoardListItem.module.scss';
 
 import BoardActionsStep from '../../steps/BoardActionsStep';
@@ -17,13 +17,14 @@ function BoardListItem({
   canEdit,
   canDelete,
   canLeave,
+  isFavorite,
   currentUserMembershipId,
   handleClick,
   onBoardUpdate,
   onBoardDelete,
   onBoardLeave,
 }) {
-  // const [t] = useTranslation();
+  const [t] = useTranslation();
   const [isBoardActionsPopoverOpen, setIsBoardActionsPopoverOpen] = useState(false);
 
   const BoardActionsPopover = usePopup(BoardActionsStep);
@@ -65,28 +66,48 @@ function BoardListItem({
       <div className={styles.itemContent}>
         <p className={styles.itemName}>{board.name}</p>
       </div>
-      {editable && (canEdit || canLeave) && (
-        <BoardActionsPopover
-          defaultData={pick(board, 'name')}
-          canEdit={canEdit}
-          canDelete={canDelete}
-          canLeave={canLeave}
-          onUpdate={(data) => onBoardUpdate(board.id, data)}
-          onDelete={() => onBoardDelete(board.id)}
-          onLeave={() => onBoardLeave(currentUserMembershipId)}
-          onOpenChange={setIsBoardActionsPopoverOpen}
-        >
-          <div
+      {editable && (
+        <div className={styles.itemActions}>
+          <button
             type="button"
-            className={styles.itemEdit}
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.key === 'Enter' && e.stopPropagation()}
-            role="button"
-            tabIndex={0}
+            className={classNames(styles.itemAction, isFavorite && styles.itemFavoriteActive)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onBoardUpdate(board.id, { isFavorite: !isFavorite });
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+            aria-pressed={isFavorite}
+            aria-label={isFavorite ? t('action.removeFromFavorites') : t('action.addToFavorites')}
+            title={isFavorite ? t('action.removeFromFavorites') : t('action.addToFavorites')}
           >
-            <Icon type="outlined" name="more_horiz" size="medium" />
-          </div>
-        </BoardActionsPopover>
+            <Icon
+              name={isFavorite ? 'star' : 'star_border'}
+              type={isFavorite ? 'filled' : 'outlined'}
+              size="medium"
+            />
+          </button>
+          <BoardActionsPopover
+            defaultData={pick(board, 'name')}
+            canEdit={canEdit}
+            canDelete={canDelete}
+            canLeave={canLeave}
+            isFavorite={isFavorite}
+            onUpdate={(data) => onBoardUpdate(board.id, data)}
+            onDelete={() => onBoardDelete(board.id)}
+            onLeave={() => onBoardLeave(currentUserMembershipId)}
+            onFavoriteToggle={() => onBoardUpdate(board.id, { isFavorite: !isFavorite })}
+            onOpenChange={setIsBoardActionsPopoverOpen}
+          >
+            <button
+              type="button"
+              className={styles.itemAction}
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              <Icon type="outlined" name="more_horiz" size="medium" />
+            </button>
+          </BoardActionsPopover>
+        </div>
       )}
       {showDescription && <div className={styles.itemDescription}>{board.description}</div>}
     </div>
@@ -101,6 +122,7 @@ BoardListItem.propTypes = {
   canEdit: PropTypes.bool.isRequired,
   canDelete: PropTypes.bool,
   canLeave: PropTypes.bool.isRequired,
+  isFavorite: PropTypes.bool,
   currentUserMembershipId: PropTypes.string,
   handleClick: PropTypes.func.isRequired,
   onBoardUpdate: PropTypes.func,
@@ -112,6 +134,7 @@ BoardListItem.defaultProps = {
   showDescription: false,
   isActive: false,
   canDelete: false,
+  isFavorite: false,
   currentUserMembershipId: null,
   onBoardUpdate: () => {},
   onBoardDelete: () => {},

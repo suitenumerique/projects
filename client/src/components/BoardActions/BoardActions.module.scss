@@ -12,9 +12,22 @@
     gap: 1rem;
   }
 
-  .boardName {
+  // Board name followed by its favorite button.
+  .boardTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
     min-width: 100px;
     flex: 1 1 0;
+  }
+
+  .favoriteButtonActive {
+    color: var(--c--globals--colors--brand-550);
+  }
+
+  .boardName {
+    min-width: 0;
+    flex: 0 1 auto;
     font-size: 1.375rem;
     font-weight: 700;
     line-height: 34px;

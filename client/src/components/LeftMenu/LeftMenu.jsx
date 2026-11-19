@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Button, Select } from '@gouvfr-lasuite/cunningham-react';
@@ -43,6 +43,17 @@ const LeftMenu = React.memo(
     });
 
     const BoardCreateStepPopover = usePopup(BoardCreateStep);
+
+    // Favorites also stay in their space: this is only a shortcut, sorted by name.
+    const favoriteBoards = useMemo(() => {
+      const favoriteBoardIds = new Set(
+        userBoardPreferences.filter((p) => p.isFavorite).map((p) => p.boardId),
+      );
+
+      return [...privateBoards, ...sharedBoards]
+        .filter((board) => favoriteBoardIds.has(board.id))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }, [privateBoards, sharedBoards, userBoardPreferences]);
 
     const goToBoard = useCallback((boardId) => {
       store.dispatch(push(Paths.BOARDS.replace(':id', boardId)));
@@ -137,6 +148,28 @@ const LeftMenu = React.memo(
           )}
         </div>
         <div className={styles.spaces}>
+          {favoriteBoards.length > 0 && (
+            <div className={styles.space}>
+              <p className={styles.spaceTitle}>
+                <span className={styles.spaceTitleLabel}>
+                  <Icon name="star" type="filled" size="small" className={styles.favoritesIcon} />
+                  {t('common.favorites')}
+                </span>
+              </p>
+              <div className={styles.boards}>
+                {favoriteBoards.map((board) => (
+                  <BoardListItemContainer
+                    key={board.id}
+                    id={board.id}
+                    showDescription={false}
+                    editable
+                    isActive={board.id === currentBoardId}
+                    handleClick={() => goToBoard(board.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <div className={styles.space}>
             <p className={styles.spaceTitle}>
               {t('common.internalBoardWorkspace')}

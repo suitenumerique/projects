@@ -17,10 +17,14 @@
     line-height: 1;
   }
 
+  &:focus-within .itemActions {
+    display: flex;
+  }
+
   &:hover {
     background-color: var(--c--contextuals--background--semantic--overlay--primary);
-    .itemEdit {
-      opacity: 1;
+    .itemActions {
+      display: flex;
     }
 
     .itemDescription {
@@ -35,8 +39,8 @@
   &.popoverOpened {
     background-color: var(--c--contextuals--background--semantic--overlay--primary);
 
-    .itemEdit {
-      opacity: 1;
+    .itemActions {
+      display: flex;
     }
   }
 }
@@ -82,14 +86,42 @@
   line-height: 1.4;
 }
 
-.itemEdit {
+// Favorite star and "…" menu, shown on hover. Same buttons as the folders
+// (FolderListItem): they sit in the row, so the name's ellipsis stops before them.
+.itemActions {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+  // Ends 4px from the item's edge, like the folders.
+  margin-right: calc(4px - 1rem);
+}
+
+.itemAction {
   display: flex;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 6px;
-  background-color: var(--c--contextuals--background--semantic--neutral--tertiary);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--c--contextuals--content--semantic--neutral--primary);
+
+  // Under #app like FolderListItem, to win over the ui-kit icon size.
+  :global(#app) & > span {
+    font-size: 20px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--c--contextuals--background--semantic--overlay--primary);
+  }
+}
+
+.itemFavoriteActive {
+  color: var(--c--globals--colors--brand-550);
 }
 
 .itemDescription {

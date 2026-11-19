@@ -9,6 +9,7 @@ export default class extends BaseModel {
   static fields = {
     id: attr(),
     position: attr(),
+    isFavorite: attr(),
     userId: fk({
       to: 'User',
       as: 'user',

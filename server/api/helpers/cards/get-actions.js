@@ -29,8 +29,9 @@ module.exports = {
       };
     }
 
+    // The card thread shows comments and assignments; details add the rest.
     if (!inputs.withDetails) {
-      criteria.type = Action.Types.COMMENT_CARD;
+      criteria.type = [Action.Types.COMMENT_CARD, Action.Types.ADD_MEMBER_TO_CARD];
     }
 
     return sails.helpers.actions.getMany(criteria, LIMIT);

@@ -18,6 +18,11 @@ module.exports = {
     buttonLabel: {
       type: 'string',
     },
+    // Why the user gets this notification email, e.g. 'vous suivez cette carte':
+    // adds a footer with a link to their email notification settings.
+    footerReason: {
+      type: 'string',
+    },
   },
 
   sync: true,
@@ -40,6 +45,14 @@ module.exports = {
             </td>
           </tr>
         </table>`
+      : '';
+
+    // `?modal=user-settings` makes the app open the profile modal.
+    const footerReasonHtml = inputs.footerReason
+      ? `<p style="margin:32px 0 0;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;line-height:1.5;color:#666666;">
+          Vous recevez cet e-mail car ${inputs.footerReason} dans ${sails.config.custom.serviceName}.<br />
+          <a href="${baseUrl}/?modal=user-settings" style="color:#3E5DE7;text-decoration:underline;">Gérer mes notifications par e-mail</a>
+        </p>`
       : '';
 
     return `<!DOCTYPE html>
@@ -113,6 +126,7 @@ module.exports = {
                 ${inputs.body}
               </div>
               ${buttonHtml}
+              ${footerReasonHtml}
             </td>
           </tr>
           <!-- Divider -->

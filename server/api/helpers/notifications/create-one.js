@@ -16,8 +16,18 @@ const valuesValidator = (value) => {
 
 const cardUrl = (card) => `${process.env.BASE_URL}/cards/${card.id}`;
 
+// Why the user gets the email, shown in its footer.
+const EmailReasons = {
+  MENTION: 'vous avez été mentionné(e)',
+  ASSIGNMENT: 'une carte vous a été assignée',
+  SUBSCRIPTION: 'vous suivez cette carte',
+};
+
+const strong = (text) => `<strong>${_.escape(text)}</strong>`;
+
 // The notification center always gets every notification, but emails follow the
-// user's preferences: mentions on one side, activity on subscribed cards on the other.
+// user's preferences: mentions, assignments, and activity on subscribed cards
+// (comments, moves, description changes).
 const buildAndSendEmail = async (
   board,
   card,
@@ -29,10 +39,12 @@ const buildAndSendEmail = async (
   let subject;
   let heading;
   let body;
+  let reason;
 
-  const actorName = `<strong>${actorUser.name} (${actorUser.email})</strong>`;
-  const cardName = `<strong>${card.name}</strong>`;
-  const boardName = `<strong>${board.name}</strong>`;
+  const actorName = strong(actorUser.name);
+  const quotedCardName = `« ${strong(card.name)} »`;
+  const boardName = strong(board.name);
+  const isSubscriptionEmail = isCardSubscriber && notifiableUser.notifySubscribedCardsByEmail;
 
   switch (action.type) {
     case Action.Types.COMMENT_CARD: {
@@ -41,19 +53,17 @@ const buildAndSendEmail = async (
         .includes(notifiableUser.id);
 
       if (isMentioned && notifiableUser.notifyMentionsByEmail) {
-        subject = `Vous avez été mentionné : ${card.name}`;
-        heading = 'Vous avez été mentionné !';
+        subject = `${actorUser.name} vous a mentionné dans « ${card.name} »`;
+        heading = 'Vous avez été mentionné(e)';
         body =
-          `<p>${actorName} vous a mentionné dans un commentaire de la carte ${cardName} ` +
-          `dans le tableau ${boardName} :</p>` +
-          `<blockquote style="margin: 16px 0; padding: 8px 16px; border-left: 3px solid #dddddd; color: #3a3a3a;">` +
-          `${sails.helpers.comments.formatText(action.data.text)}</blockquote>`;
-      } else if (isCardSubscriber && notifiableUser.notifySubscribedCardsByEmail) {
-        subject = `Nouveau commentaire : ${card.name}`;
-        heading = 'Nouveau commentaire !';
-        body =
-          `<p>${actorName} a ajouté un commentaire dans la carte suivante : ${cardName} ` +
-          `dans le tableau ${boardName}</p>`;
+          `<p>${actorName} vous a mentionné dans ${quotedCardName} (tableau ${boardName}) :</p>` +
+          `<p>« ${sails.helpers.comments.formatText(action.data.text)} »</p>`;
+        reason = EmailReasons.MENTION;
+      } else if (isSubscriptionEmail) {
+        subject = `${actorUser.name} a commenté « ${card.name} »`;
+        heading = 'Nouveau commentaire';
+        body = `<p>${actorName} a commenté ${quotedCardName} dans le tableau ${boardName}.</p>`;
+        reason = EmailReasons.SUBSCRIPTION;
       } else {
         return;
       }
@@ -61,16 +71,37 @@ const buildAndSendEmail = async (
       break;
     }
     case Action.Types.ADD_MEMBER_TO_CARD:
-      if (
-        notifiableUser.id !== action.data.member.id ||
-        !notifiableUser.notifySubscribedCardsByEmail
-      ) {
+      if (notifiableUser.id !== action.data.member.id || !notifiableUser.notifyAssignmentsByEmail) {
         return;
       }
 
-      subject = `Nouvelle carte attribuée : ${card.name}`;
-      heading = 'Nouvelle carte attribuée !';
-      body = `<p>${actorName} vous a attribué la carte suivante : ${cardName} dans le tableau ${boardName}.</p>`;
+      subject = `${actorUser.name} vous a assigné « ${card.name} »`;
+      heading = 'Nouvelle carte assignée';
+      body = `<p>${actorName} vous a assigné ${quotedCardName} dans le tableau ${boardName}.</p>`;
+      reason = EmailReasons.ASSIGNMENT;
+      break;
+    case Action.Types.MOVE_CARD:
+      if (!isSubscriptionEmail) {
+        return;
+      }
+
+      subject = `${actorUser.name} a déplacé « ${card.name} »`;
+      heading = 'Carte déplacée';
+      body =
+        `<p>${actorName} a déplacé ${quotedCardName} ` +
+        `de ${strong(action.data.fromList.name)} vers ${strong(action.data.toList.name)} ` +
+        `dans le tableau ${boardName}.</p>`;
+      reason = EmailReasons.SUBSCRIPTION;
+      break;
+    case Action.Types.UPDATE_DESCRIPTION:
+      if (!isSubscriptionEmail) {
+        return;
+      }
+
+      subject = `${actorUser.name} a modifié la description de « ${card.name} »`;
+      heading = 'Description modifiée';
+      body = `<p>${actorName} a modifié la description de ${quotedCardName} dans le tableau ${boardName}.</p>`;
+      reason = EmailReasons.SUBSCRIPTION;
       break;
     default:
       return;
@@ -81,7 +112,8 @@ const buildAndSendEmail = async (
     heading,
     body,
     buttonUrl: cardUrl(card),
-    buttonLabel: 'Ouvrir la carte',
+    buttonLabel: 'Voir la carte',
+    footerReason: reason,
   });
 
   await sails.helpers.utils.sendEmail.with({

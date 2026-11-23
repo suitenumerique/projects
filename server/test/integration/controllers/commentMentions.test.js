@@ -274,14 +274,29 @@ describe('comment mentions', () => {
       await waitForEmails(2);
 
       const mentionEmail = emailTo(MEMBER_ID);
-      expect(mentionEmail.subject).to.equal('Vous avez été mentionné : Card');
+      expect(mentionEmail.subject).to.equal(`User ${AUTHOR_ID} vous a mentionné dans « Card »`);
       expect(mentionEmail.html).to.include(
         `Look &lt;b&gt;here&lt;/b&gt; @User ${MEMBER_ID}<br>thanks`,
       );
       expect(mentionEmail.html).to.not.include('<b>here</b>');
       expect(mentionEmail.html).to.not.include(`(${MEMBER_ID})`);
 
-      expect(emailTo(SUBSCRIBER_ID).subject).to.equal('Nouveau commentaire : Card');
+      expect(emailTo(SUBSCRIBER_ID).subject).to.equal(`User ${AUTHOR_ID} a commenté « Card »`);
+    });
+
+    it('explains in the footer why each email was sent, with a link to the settings', async () => {
+      await createComment(`Hi ${mention(MEMBER_ID)}`);
+
+      await waitForEmails(2);
+
+      expect(emailTo(MEMBER_ID).html).to.include(
+        'Vous recevez cet e-mail car vous avez été mentionné(e) dans Projets.',
+      );
+      expect(emailTo(SUBSCRIBER_ID).html).to.include(
+        'Vous recevez cet e-mail car vous suivez cette carte dans Projets.',
+      );
+      expect(emailTo(MEMBER_ID).html).to.include('/?modal=user-settings');
+      expect(emailTo(MEMBER_ID).html).to.include('Gérer mes notifications par e-mail');
     });
 
     it('skips mention emails for users who turned them off, keeping subscriber emails', async () => {
@@ -295,7 +310,7 @@ describe('comment mentions', () => {
 
       // A mentioned subscriber still gets the subscribed cards email.
       expect(sentEmails).to.have.lengthOf(1);
-      expect(emailTo(SUBSCRIBER_ID).subject).to.equal('Nouveau commentaire : Card');
+      expect(emailTo(SUBSCRIBER_ID).subject).to.equal(`User ${AUTHOR_ID} a commenté « Card »`);
 
       // The notification center is always notified.
       expect(await notifiedUserIds(comment.id)).to.deep.equal([MEMBER_ID, SUBSCRIBER_ID]);
@@ -310,7 +325,9 @@ describe('comment mentions', () => {
       await waitForStrayEmails();
 
       expect(sentEmails).to.have.lengthOf(1);
-      expect(emailTo(MEMBER_ID).subject).to.equal('Vous avez été mentionné : Card');
+      expect(emailTo(MEMBER_ID).subject).to.equal(
+        `User ${AUTHOR_ID} vous a mentionné dans « Card »`,
+      );
 
       expect(await notifiedUserIds(comment.id)).to.deep.equal([MEMBER_ID, SUBSCRIBER_ID]);
     });
@@ -328,7 +345,9 @@ describe('comment mentions', () => {
       await waitForStrayEmails();
 
       expect(sentEmails).to.have.lengthOf(1);
-      expect(emailTo(MEMBER_ID).subject).to.equal('Vous avez été mentionné : Card');
+      expect(emailTo(MEMBER_ID).subject).to.equal(
+        `User ${AUTHOR_ID} vous a mentionné dans « Card »`,
+      );
     });
   });
 });

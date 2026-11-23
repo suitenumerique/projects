@@ -47,13 +47,15 @@ module.exports = {
       userId: values.user.id,
     }).fetch();
 
+    // The author's client adds its own comments, but not other actions (such as
+    // assignments, shown in the card thread): only spare it comments.
     sails.sockets.broadcast(
       `board:${values.card.boardId}`,
       'actionCreate',
       {
         item: action,
       },
-      inputs.request,
+      action.type === Action.Types.COMMENT_CARD ? inputs.request : undefined,
     );
 
     sails.helpers.utils.sendWebhooks.with({

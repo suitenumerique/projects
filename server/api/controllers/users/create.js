@@ -59,6 +59,9 @@ module.exports = {
     notifyMentionsByEmail: {
       type: 'boolean',
     },
+    notifyAssignmentsByEmail: {
+      type: 'boolean',
+    },
     notifySubscribedCardsByEmail: {
       type: 'boolean',
     },
@@ -93,6 +96,7 @@ module.exports = {
       'language',
       'subscribeToOwnCards',
       'notifyMentionsByEmail',
+      'notifyAssignmentsByEmail',
       'notifySubscribedCardsByEmail',
     ]);
 

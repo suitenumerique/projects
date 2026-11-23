@@ -308,6 +308,25 @@ module.exports = {
         });
       }
 
+      // Empty descriptions may come as null or '': only a real change counts.
+      if (
+        !_.isUndefined(values.description) &&
+        (values.description || '') !== (inputs.record.description || '')
+      ) {
+        await sails.helpers.actions.createOne.with({
+          project,
+          board,
+          list,
+          values: {
+            card,
+            user: inputs.actorUser,
+            type: Action.Types.UPDATE_DESCRIPTION,
+            data: {},
+          },
+          request: inputs.request,
+        });
+      }
+
       // TODO: add transfer action
     }
 

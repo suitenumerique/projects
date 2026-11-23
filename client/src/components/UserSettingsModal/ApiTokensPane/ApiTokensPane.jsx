@@ -155,7 +155,7 @@ const ApiTokensPane = React.memo(() => {
 
   return (
     <div className={styles.wrapper}>
-      <p className={styles.title}>{t('common.apiTokens')}</p>
+      <h3 className={styles.title}>{t('common.apiTokens')}</h3>
       {content}
       {error && <p className={styles.error}>{error}</p>}
     </div>

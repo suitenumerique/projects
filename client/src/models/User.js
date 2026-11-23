@@ -1,3 +1,4 @@
+import fromPairs from 'lodash/fromPairs';
 import { attr } from 'redux-orm';
 
 import BaseModel from './BaseModel';
@@ -44,6 +45,7 @@ export default class extends BaseModel {
     language: attr(),
     subscribeToOwnCards: attr(),
     notifyMentionsByEmail: attr(),
+    notifyAssignmentsByEmail: attr(),
     notifySubscribedCardsByEmail: attr(),
     isAdmin: attr(),
     isLocked: attr(),
@@ -57,6 +59,10 @@ export default class extends BaseModel {
     }),
     isAvatarUpdating: attr({
       getDefault: () => false,
+    }),
+    // Save status ('pending', 'success' or 'error') of each field, by field name.
+    fieldUpdateStatuses: attr({
+      getDefault: () => ({}),
     }),
     emailUpdateForm: attr({
       getDefault: () => DEFAULT_EMAIL_UPDATE_FORM,
@@ -99,14 +105,47 @@ export default class extends BaseModel {
         break;
       case ActionTypes.USER_CREATE__SUCCESS:
       case ActionTypes.USER_CREATE_HANDLE:
-      case ActionTypes.USER_UPDATE__SUCCESS:
-        User.upsert(payload.user);
+      case ActionTypes.USER_UPDATE__SUCCESS: {
+        const userModel = User.upsert(payload.user);
+
+        userModel.update({
+          fieldUpdateStatuses: {
+            ...userModel.fieldUpdateStatuses,
+            ...fromPairs(payload.fields.map((field) => [field, 'success'])),
+          },
+        });
 
         break;
-      case ActionTypes.USER_UPDATE:
-        User.withId(payload.id).update(payload.data);
+      }
+      case ActionTypes.USER_UPDATE__FAILURE: {
+        const userModel = User.withId(payload.id);
+
+        // Roll the optimistic update back.
+        if (userModel) {
+          userModel.update({
+            ...payload.prevData,
+            fieldUpdateStatuses: {
+              ...userModel.fieldUpdateStatuses,
+              ...fromPairs(Object.keys(payload.prevData).map((field) => [field, 'error'])),
+            },
+          });
+        }
 
         break;
+      }
+      case ActionTypes.USER_UPDATE: {
+        const userModel = User.withId(payload.id);
+
+        userModel.update({
+          ...payload.data,
+          fieldUpdateStatuses: {
+            ...userModel.fieldUpdateStatuses,
+            ...fromPairs(Object.keys(payload.data).map((field) => [field, 'pending'])),
+          },
+        });
+
+        break;
+      }
       case ActionTypes.USER_UPDATE_HANDLE:
         User.upsert(payload.user);
 

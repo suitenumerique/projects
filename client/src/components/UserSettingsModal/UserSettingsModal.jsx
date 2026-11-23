@@ -20,7 +20,9 @@ const UserSettingsModal = React.memo(
     language,
     subscribeToOwnCards,
     notifyMentionsByEmail,
+    notifyAssignmentsByEmail,
     notifySubscribedCardsByEmail,
+    fieldUpdateStatuses,
     defaultLanguage,
     supportedLanguages,
     onUpdate,
@@ -51,7 +53,9 @@ const UserSettingsModal = React.memo(
           language={language}
           subscribeToOwnCards={subscribeToOwnCards}
           notifyMentionsByEmail={notifyMentionsByEmail}
+          notifyAssignmentsByEmail={notifyAssignmentsByEmail}
           notifySubscribedCardsByEmail={notifySubscribedCardsByEmail}
+          fieldUpdateStatuses={fieldUpdateStatuses}
           defaultLanguage={defaultLanguage}
           supportedLanguages={supportedLanguages}
           onUpdate={onUpdate}
@@ -73,7 +77,9 @@ UserSettingsModal.propTypes = {
   language: PropTypes.string,
   subscribeToOwnCards: PropTypes.bool.isRequired,
   notifyMentionsByEmail: PropTypes.bool.isRequired,
+  notifyAssignmentsByEmail: PropTypes.bool.isRequired,
   notifySubscribedCardsByEmail: PropTypes.bool.isRequired,
+  fieldUpdateStatuses: PropTypes.objectOf(PropTypes.string).isRequired,
   defaultLanguage: PropTypes.string,
   supportedLanguages: PropTypes.arrayOf(PropTypes.string),
   onUpdate: PropTypes.func.isRequired,

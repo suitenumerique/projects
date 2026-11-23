@@ -1,3 +1,4 @@
+import pick from 'lodash/pick';
 import { call, put, select } from 'redux-saga/effects';
 
 import { changeCoreLanguage, logout } from './core';
@@ -30,17 +31,21 @@ export function* clearUserCreateError() {
 }
 
 export function* updateUser(id, data) {
+  const fields = Object.keys(data);
+  const currentUser = yield select(selectors.selectCurrentUser);
+  const prevData = currentUser && currentUser.id === id ? pick(currentUser, fields) : {};
+
   yield put(actions.updateUser(id, data));
 
   let user;
   try {
     ({ item: user } = yield call(request, api.updateUser, id, data));
   } catch (error) {
-    yield put(actions.updateUser.failure(id, error));
+    yield put(actions.updateUser.failure(id, error, prevData));
     return;
   }
 
-  yield put(actions.updateUser.success(user));
+  yield put(actions.updateUser.success(user, fields));
 }
 
 export function* updateCurrentUser(data) {

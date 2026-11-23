@@ -9,6 +9,10 @@ import api from '../../../api';
 import { getAccessToken } from '../../../utils/access-token-storage';
 import ActionTypes from '../../../constants/ActionTypes';
 import Paths from '../../../constants/Paths';
+import ModalTypes from '../../../constants/ModalTypes';
+
+// Links from notification emails open the profile modal: `?modal=user-settings`.
+const USER_SETTINGS_MODAL_PARAM = 'user-settings';
 
 export function* goToRoot() {
   yield put(push(Paths.ROOT));
@@ -64,6 +68,8 @@ export function* handleLocationChange() {
     yield take([ActionTypes.CORE_INITIALIZE, 'SET_INITIALIZING_FALSE']);
   }
 
+  const searchParams = new URLSearchParams(window.location.search);
+
   if (pathsMatch.pattern.path === Paths.ROOT) {
     const config = yield select(selectors.selectConfig);
     if (config && config.isOrgMode) {
@@ -73,10 +79,26 @@ export function* handleLocationChange() {
         (p) => p.organizationId === currentUser.organizationId,
       );
       if (defaultProject) {
-        yield call(goToProject, defaultProject.id);
+        // Keep the query, so the next location change can open a modal it asks for.
+        yield put(
+          push(`${Paths.PROJECTS.replace(':id', defaultProject.id)}${window.location.search}`),
+        );
         return;
       }
     }
+  }
+
+  // Opened after redirects, since a location change closes the current modal.
+  if (searchParams.get('modal') === USER_SETTINGS_MODAL_PARAM) {
+    searchParams.delete('modal');
+    const search = searchParams.toString();
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${window.location.pathname}${search ? `?${search}` : ''}${window.location.hash}`,
+    );
+
+    yield put(actions.openModal(ModalTypes.USER_SETTINGS));
   }
 
   let board;

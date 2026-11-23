@@ -15,7 +15,9 @@ const mapStateToProps = (state) => {
     language,
     subscribeToOwnCards,
     notifyMentionsByEmail,
+    notifyAssignmentsByEmail,
     notifySubscribedCardsByEmail,
+    fieldUpdateStatuses,
   } = selectors.selectCurrentUser(state);
 
   const { defaultLanguage, supportedLanguages } = selectors.selectConfig(state);
@@ -29,7 +31,9 @@ const mapStateToProps = (state) => {
     language,
     subscribeToOwnCards,
     notifyMentionsByEmail,
+    notifyAssignmentsByEmail,
     notifySubscribedCardsByEmail,
+    fieldUpdateStatuses,
     defaultLanguage,
     supportedLanguages,
   };

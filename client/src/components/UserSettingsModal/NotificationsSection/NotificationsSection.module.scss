@@ -6,10 +6,29 @@
     margin: 20px 0;
   }
 
+  // Type scale: section title (1rem, 600, as in the API tokens pane) > group
+  // title (0.875rem, 600) > setting title (0.875rem, regular) > description.
   .title {
     margin: 0;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 600;
+    line-height: 1.5rem;
+  }
+
+  .intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
+
+    // Keep the bell on the first line of text.
+    > :first-child {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
   }
 
   // Title and description on the left, switch on the right.
@@ -22,98 +41,51 @@
 
   .settingTitle {
     display: block;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   .settingDescription {
     display: block;
     margin-top: 0.125rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: var(--c--contextuals--content--semantic--neutral--secondary);
-  }
-
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-
-    th,
-    td {
-      padding: 0.875rem 0;
-      vertical-align: top;
-    }
-
-    thead th {
-      padding-top: 0;
-      vertical-align: bottom;
-    }
-
-    tbody tr {
-      border-top: 1px solid var(--c--contextuals--border--semantic--neutral--tertiary);
-    }
-  }
-
-  .headerLabel {
-    text-align: left;
     font-size: 0.8125rem;
-    font-weight: 700;
-    color: var(--c--contextuals--content--semantic--neutral--secondary);
-  }
-
-  .headerChannel {
-    width: 6.5rem;
-    text-align: center;
-    font-size: 0.8125rem;
-    font-weight: 700;
     line-height: 1.125rem;
-    color: var(--c--contextuals--content--semantic--neutral--tertiary);
-
-    span {
-      display: block;
-    }
-
-    // Icon above its label.
-    > :first-child {
-      margin: 0 auto 0.25rem;
-    }
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
   }
 
-  .rowLabel {
-    text-align: left;
-    font-weight: normal;
-  }
-
-  .cell {
-    text-align: center;
-  }
-
-  // Lock drawn on the handle of the always-on switch. It sits on the rail with
-  // the same box as the checked handle (cunningham: 18px, 4px + 20px from the
-  // left, 3px from the top), so it stays centered whatever wraps the switch.
-  .lockedSwitch {
-    display: inline-flex;
-
-    :global(.c__switch__rail)::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 24px;
-      width: 1.125rem;
-      height: 1.125rem;
-      background-color: var(--c--contextuals--content--semantic--neutral--secondary);
-      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z'/%3E%3C/svg%3E")
-        center / 0.75rem no-repeat;
-      pointer-events: none;
-    }
-  }
-
-  .footnote {
+  // Email switches, separated from the subscription setting and from each other.
+  .emailGroup {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
+    padding-top: 1.5rem;
+    border-top: 1px solid
+      var(--c--contextuals--border--semantic--neutral--tertiary);
+
+    .setting {
+      padding: 0.875rem 0;
+    }
+
+    .setting + .setting {
+      border-top: 1px solid
+        var(--c--contextuals--border--semantic--neutral--tertiary);
+    }
+  }
+
+  .groupHeader {
+    margin-bottom: 0.25rem;
+  }
+
+  .groupTitle {
     margin: 0;
     font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+  }
+
+  .groupSubtitle {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
     color: var(--c--contextuals--content--semantic--neutral--secondary);
   }
 }

@@ -92,6 +92,19 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
             <strong />
           </Trans>
         );
+      case ActivityTypes.UPDATE_DESCRIPTION:
+        return (
+          <Trans
+            i18nKey="common.userUpdatedDescriptionOfCard"
+            values={{
+              user: activity.user.name,
+              card: card.name,
+            }}
+          >
+            <strong />
+            <strong />
+          </Trans>
+        );
       case ActivityTypes.ADD_ATTACHMENT:
         return (
           <Trans
@@ -137,14 +150,18 @@ const NotificationsStep = React.memo(({ items, onMarkAsRead, onClose }) => {
                       />
                       <div className={styles.itemContent}>
                         <span>{renderItemContent(item)}</span>
-                        {item.createdAt && (
-                          <span className={styles.itemDate}>
-                            {formatDistanceToNow(new Date(item.createdAt), {
-                              addSuffix: true,
-                              locale: i18n.dateFns.getLocale(),
-                            })}
-                          </span>
-                        )}
+                        <span className={styles.itemDate}>
+                          {[
+                            [item.project?.name, item.board?.name].filter(Boolean).join(' - '),
+                            item.createdAt &&
+                              formatDistanceToNow(new Date(item.createdAt), {
+                                addSuffix: true,
+                                locale: i18n.dateFns.getLocale(),
+                              }),
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </span>
                       </div>
                     </Link>
                   ) : (

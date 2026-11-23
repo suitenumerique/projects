@@ -19,7 +19,9 @@ const AccountPane = React.memo(
     language,
     subscribeToOwnCards,
     notifyMentionsByEmail,
+    notifyAssignmentsByEmail,
     notifySubscribedCardsByEmail,
+    fieldUpdateStatuses,
     defaultLanguage,
     supportedLanguages,
     onUpdate,
@@ -59,13 +61,17 @@ const AccountPane = React.memo(
         </div>
         <HorizontalSeparator />
         <NotificationsSection
+          email={email}
           subscribeToOwnCards={subscribeToOwnCards}
           notifyMentionsByEmail={notifyMentionsByEmail}
+          notifyAssignmentsByEmail={notifyAssignmentsByEmail}
           notifySubscribedCardsByEmail={notifySubscribedCardsByEmail}
+          fieldUpdateStatuses={fieldUpdateStatuses}
           onUpdate={onUpdate}
         />
         <HorizontalSeparator />
-        <div className={styles.preferences}>
+        <section className={styles.preferences}>
+          <h3 className={styles.sectionTitle}>{t('common.preferences')}</h3>
           {!disableDarkMode && (
             <Select
               label={t('common.theme')}
@@ -112,7 +118,7 @@ const AccountPane = React.memo(
             }}
             fullWidth
           />
-        </div>
+        </section>
       </div>
     );
   },
@@ -126,7 +132,9 @@ AccountPane.propTypes = {
   language: PropTypes.string,
   subscribeToOwnCards: PropTypes.bool.isRequired,
   notifyMentionsByEmail: PropTypes.bool.isRequired,
+  notifyAssignmentsByEmail: PropTypes.bool.isRequired,
   notifySubscribedCardsByEmail: PropTypes.bool.isRequired,
+  fieldUpdateStatuses: PropTypes.objectOf(PropTypes.string).isRequired,
   defaultLanguage: PropTypes.string,
   supportedLanguages: PropTypes.arrayOf(PropTypes.string),
   onUpdate: PropTypes.func.isRequired,

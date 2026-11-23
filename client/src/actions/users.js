@@ -41,18 +41,22 @@ const updateUser = (id, data) => ({
   },
 });
 
-updateUser.success = (user) => ({
+// `fields` are the updated fields, for their save status.
+updateUser.success = (user, fields = []) => ({
   type: ActionTypes.USER_UPDATE__SUCCESS,
   payload: {
     user,
+    fields,
   },
 });
 
-updateUser.failure = (id, error) => ({
+// `prevData` holds the values before the optimistic update, to roll it back.
+updateUser.failure = (id, error, prevData = {}) => ({
   type: ActionTypes.USER_UPDATE__FAILURE,
   payload: {
     id,
     error,
+    prevData,
   },
 });
 

@@ -135,6 +135,9 @@ export const selectNotificationsForCurrentUser = createSelector(
             getMentionedUserIds(notificationModel.activity.data.text).includes(id),
         },
         card: notificationModel.card && notificationModel.card.ref,
+        // Where the card is, when its board is loaded.
+        board: notificationModel.card?.board?.ref,
+        project: notificationModel.card?.board?.project?.ref,
       }));
   },
 );

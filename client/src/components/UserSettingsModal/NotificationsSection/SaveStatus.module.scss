@@ -1,0 +1,25 @@
+:global(#app) {
+  .wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+
+    &:not(:empty) {
+      margin-top: 0.25rem;
+    }
+  }
+
+  .pending {
+    color: var(--c--contextuals--content--semantic--neutral--secondary);
+  }
+
+  .success {
+    color: var(--c--contextuals--content--semantic--success--primary);
+  }
+
+  .error {
+    color: var(--c--contextuals--content--semantic--error--primary);
+  }
+}

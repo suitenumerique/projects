@@ -355,11 +355,15 @@ export default class extends BaseModel {
       isInCard: true,
     };
 
+    // The card thread shows comments and assignments; details add the rest.
+    let querySet = this.activities.filter(filter);
     if (!this.isActivitiesDetailsVisible) {
-      filter.type = ActivityTypes.COMMENT_CARD;
+      querySet = querySet.filter(({ type }) =>
+        [ActivityTypes.COMMENT_CARD, ActivityTypes.ADD_MEMBER_TO_CARD].includes(type),
+      );
     }
 
-    return this.activities.filter(filter).orderBy('createdAt', false);
+    return querySet.orderBy('createdAt', false);
   }
 
   getUnreadNotificationsQuerySet() {

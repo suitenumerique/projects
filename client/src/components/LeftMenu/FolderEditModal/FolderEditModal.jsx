@@ -4,18 +4,22 @@ import PropTypes from 'prop-types';
 import { useForm } from '../../../hooks';
 
 function FolderEditModal({ initialData, isOpen, onClose, onSubmit }) {
-  const [data, handleFieldChange] = useForm({
+  const [data, handleFieldChange, setData] = useForm({
     name: '',
     ...initialData,
   });
 
   useEffect(() => {
     if (isOpen) {
+      // The modal stays mounted between openings, so reset the form each time it opens.
+      setData({ name: '', ...initialData });
       setTimeout(() => {
         const input = document.querySelector('input[name="name"]');
         input?.focus();
       }, 50);
     }
+    // Only reset on opening: initialData is a new object on every parent render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const handleSubmit = useCallback(
